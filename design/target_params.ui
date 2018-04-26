@@ -1,0 +1,381 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>655</width>
+    <height>427</height>
+   </rect>
+  </property>
+  <property name="acceptDrops">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QTextEdit" name="e_velocityY">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>130</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>357</y>
+     <width>191</width>
+     <height>32</height>
+    </rect>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Horizontal</enum>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_targetPressure">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>290</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_velocityX">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>130</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_positionY">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>30</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_positionX">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>30</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_positionX">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>71</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Position X</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_velocityY">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>120</y>
+     <width>71</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>VelocityY</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_velocityX">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>120</y>
+     <width>71</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>VelocityX</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_targetPressure">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>280</y>
+     <width>111</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Target Pressure</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_positionY">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>20</y>
+     <width>81</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Position Y</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="e_steerWithTiltX">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>180</y>
+     <width>21</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_stearWithTiltY">
+   <property name="geometry">
+    <rect>
+     <x>230</x>
+     <y>170</y>
+     <width>121</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Steer with Tilt Y</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="e_steerWithTiltY">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>180</y>
+     <width>21</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_stearWithTiltX">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>170</y>
+     <width>121</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Steer with Tilt X</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_height">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>70</y>
+     <width>81</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Height</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_width">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>80</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_width">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>70</y>
+     <width>71</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Width</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_height">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>80</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_tiltVelocityX">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>220</y>
+     <width>101</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tilt Velocity X</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_tiltVelocityY">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>220</y>
+     <width>101</width>
+     <height>44</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Tilt Velocity Y</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_tiltVelocityY">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>230</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_tiltVelocityX">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>230</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_pressureDifficulty">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>290</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_pressureDifficulty">
+   <property name="geometry">
+    <rect>
+     <x>260</x>
+     <y>280</y>
+     <width>131</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Pressure Difficulty</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonResetToDefault">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>360</y>
+     <width>141</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reset To Default</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonResetPosition">
+   <property name="geometry">
+    <rect>
+     <x>490</x>
+     <y>34</y>
+     <width>111</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Reset Position</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_distanceDifficulty">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>340</y>
+     <width>131</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Distance Difficulty</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_distanceDifficulty">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>350</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,19 @@
+<launch>
+    <!-- Connect the robot to the map -->
+    <arg name="nao_ip" default="127.0.0.1" />
+    <arg name="nao_port" default="9559" />
+    <arg name="nao_handedness" default="right" />
+    <arg name="nao_standing" default="False" />
+
+    <node pkg="tf" type="static_transform_publisher" name="map_footprint_broadcaster" args="0 0 0 0 0 0 /map /base_footprint 10"/>
+    <node pkg="tf" type="static_transform_publisher" name="writing_surface_broadcaster" args="0 0 0 0 0 0 /map /writing_surface 10"/>
+    <node pkg="nicolas_nao_ros" type="nao_writer.py" name="nao_writer" output="screen"/>
+    <node pkg="nicolas_nao_ros" type="activity_nao.py" name="nao_activity" output="screen"/>
+
+    <param name="nao_handedness" type="str" value="$(arg nao_handedness)"/>
+    <param name="nao_ip" type="str" value="$(arg nao_ip)"/>
+    <param name="nao_port" type="str" value="$(arg nao_port)"/>
+    <param name="nao_standing" type="bool" value="$(arg nao_standing)"/>
+    
+</launch>
+
