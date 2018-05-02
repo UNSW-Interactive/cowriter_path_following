@@ -20,12 +20,12 @@ class LinePath(QtWidgets.QDialog):
 		self.height = DEFAULT_PATH_SHAPE_HEIGHT
 		self.pressure_target = DEFAULT_PRESSURE_TARGET
 		self.pressure_difficulty = DEFAULT_PRESSURE_DIFFICULTY
-		self.distance_difficulty = DEFAULT_DISTANCE_DIFFICULTY
 		self.pathWidth = DEFAULT_PATH_WIDTH
 		self.order = DEFAULT_ORDER
 		self.sinusoidPhase = DEFAULT_SIN_PHASE
 		self.traceWithRobot = DEFAULT_TRACE_WITH_ROBOT
 		self.playAgainstRobot = DEFAULT_PLAY_AGAINST_ROBOT
+		self.naoSpeedFactor = DEFAULT_NAO_SPEED_FACTOR
 
 		super(LinePath, self).__init__(parent)
 		uic.loadUi('design/line_path.ui', self)
@@ -35,6 +35,7 @@ class LinePath(QtWidgets.QDialog):
 		self.buttonBox.rejected.connect(self.close)
 		self.buttonResetToDefault.clicked.connect(self.resetDefaultParams)
 		self.buttonCreateCustomPath.clicked.connect(self.createCustomPath)
+		self.buttonNaoExplain.clicked.connect(self.naoExplainGame)
 
 		self.choice_shape.addItem("Random Spline")
 		self.choice_shape.addItem("Sinusoid")
@@ -65,9 +66,11 @@ class LinePath(QtWidgets.QDialog):
 		except: pass
 		try: self.shape = str(self.choice_shape.currentText())
 		except: pass
-		try: self.traceWithRobot = self.e_traceWithRobot.isChecked()
+		try: self.traceWithRobot = self.c_traceWithRobot.isChecked()
 		except: pass
-		try: self.playAgainstRobot = self.e_playAgainstRobot.isChecked()
+		try: self.playAgainstRobot = self.c_playAgainstRobot.isChecked()
+		except: pass
+		try: self.naoSpeedFactor = float(self.e_naoSpeedFactor.toPlainText())
 		except: pass
 		
 		self.updatePath()
@@ -80,13 +83,13 @@ class LinePath(QtWidgets.QDialog):
 		if self.shape == "Sinusoid":
 			self.path = PathGenerator.generateSinusoid(self.centerX,
 			 self.centerY, self.width, self.height, 
-			 self.time / FRAME_TIME, self.order, self.sinusoidPhase)
+			 self.time / FRAME_TIME, self.order, self.sinusoidPhase, subsample = True)
 		elif self.shape == "Horizontal Line":
 			self.path = PathGenerator.generateHorizontalLine(self.centerX,
 			 self.centerY, self.width, self.height, self.time / FRAME_TIME)
 		elif self.shape == "Random Spline":
 			self.path = PathGenerator.generateRandomPath(self.centerX,
-			 self.centerY, self.width, self.height, self.time / FRAME_TIME, self.order)
+			 self.centerY, self.width, self.height, self.time / FRAME_TIME, self.order, subsample = True)
 		else:
 			self.path = []
 		
@@ -108,8 +111,9 @@ class LinePath(QtWidgets.QDialog):
 		self.e_targetPressure.setText(str(DEFAULT_PRESSURE_TARGET))
 		self.e_pressureDifficulty.setText(str(DEFAULT_PRESSURE_DIFFICULTY))
 		self.e_time.setText(str(DEFAULT_TIME))
-		self.e_traceWithRobot.setChecked(DEFAULT_TRACE_WITH_ROBOT)
-		self.e_playAgainstRobot.setChecked(DEFAULT_PLAY_AGAINST_ROBOT)
+		self.c_traceWithRobot.setChecked(DEFAULT_TRACE_WITH_ROBOT)
+		self.c_playAgainstRobot.setChecked(DEFAULT_PLAY_AGAINST_ROBOT)
+		self.e_naoSpeedFactor.setText(str(DEFAULT_NAO_SPEED_FACTOR))
 
 	def autoFillOldParams(self):
 		
@@ -123,6 +127,14 @@ class LinePath(QtWidgets.QDialog):
 		self.e_targetPressure.setText(str(self.pressure_target))
 		self.e_pressureDifficulty.setText(str(self.pressure_difficulty))
 		self.e_time.setText(str(self.time))
-		self.e_traceWithRobot.setChecked(self.traceWithRobot)
-		self.e_playAgainstRobot.setChecked(self.playAgainstRobot)
+		self.c_traceWithRobot.setChecked(self.traceWithRobot)
+		self.c_playAgainstRobot.setChecked(self.playAgainstRobot)
+		self.e_naoSpeedFactor.setText(str(self.naoSpeedFactor))
+
+	def naoExplainGame(self):
+		if self.c_playAgainstRobot.isChecked():
+			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
+		else:
+			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
+
 

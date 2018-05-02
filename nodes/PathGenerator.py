@@ -3,13 +3,33 @@ from math import pi, cos, sin, atan2
 from copy import deepcopy
 from scipy import interpolate
 import numpy as np
+import pandas as pd
+import glob
 
 subsamplingFactor = 13
 widthOfPath = 50.0
 
 class PathGenerator():
+        @staticmethod
+        def generateFromDB(file_name, centerX, centerY, width, height, kFrames, slowDownFactor = 1.0):
+            path = []
+            pressureTargetList = []
+            frames = int(kFrames*1000)
+            try:
+                file = glob.glob(file_name)
+                db = pd.read_pickle(file[0]) 
+                timeStep = FRAME_TIME / db.t[1]-db.t[0]
+                xSize = max(db.x)-min(db.x)
+                ySize = max(db.y)-min(db.y)
+                scale = min(width/xSize, height/ySize)
+                for i in range(int(slowDownFactor*len(db.t)/timeStep)):
+                    x = centerX + (-xSize/2 + db.x[int(i*timeStep/slowDownFactor)]) * scale
+                    y = centerY + ( ySize/2 - db.y[int(i*timeStep/slowDownFactor)]) * scale
+                    path.append([x,y])
+                    pressureTargetList.append(db.pressure[int(i*timeStep/slowDownFactor)])
+            except: print('unsupported file')
+            return path, pressureTargetList
 
-    
         @staticmethod
         def generateHorizontalLine(centerX, centerY, width, height, kFrames):
             path = []
@@ -36,10 +56,11 @@ class PathGenerator():
 
 
 	@staticmethod
-	def generateEllipse(centerX, centerY, width, height, kFrames):
+	def generateEllipse(centerX, centerY, width, height, kFrames, clockWise = False):
             path = []
             frames = int(kFrames*1000)
             angleIncrement = 2 * pi / frames
+            if not clockWise: angleIncrement *= -1
             rx = width / 2
             ry = height / 2
             for i in range(frames):
@@ -49,12 +70,31 @@ class PathGenerator():
                 path.append([x,y])
             return path
 
+	@staticmethod
+	def generateSpiral(centerX, centerY, width, height, kFrames, reps = 10.0, clockWise = False):
+            path = []
+            frames = int(kFrames*1000)
+            angleIncrement = 2 * pi * reps/ frames
+            if not clockWise: angleIncrement *= -1
+            xIncrement = float(width) / frames
+            rx = width/(2*reps)
+            ry = height / 2
+            for i in range(frames):
+                angle = angleIncrement*i + pi/2
+                x = centerX - width*0.5 + xIncrement*i + rx*cos(angle)
+                y = centerY + ry*sin(angle)
+                path.append([x,y])
+            return path
+
         @staticmethod
-	def generateSinusoid(centerX, centerY, width, height, kFrames, sinusoidReps = 3.0, sinusoidPhase = 0.0):
+	def generateSinusoid(centerX, centerY, width, height, kFrames, sinusoidReps = 3.0, sinusoidPhase = 0.0, subsample = False):
             path = []
             global subsamplingFactor 
             global widthOfPath
-            subsamplingFactor = max(int((sinusoidReps/kFrames)**1.5)*2,1)*max(int(50.0/widthOfPath), 1)
+            if subsample:
+                subsamplingFactor = max(int((sinusoidReps/kFrames)**1.5)*2,1)*max(int(50.0/widthOfPath), 1)
+            else:
+                subsamplingFactor = 1.0
             frames = int(subsamplingFactor * kFrames*1000)
             xIncrement = float(width) / frames
             for i in range(frames):
@@ -65,13 +105,16 @@ class PathGenerator():
             return path
             
         @staticmethod
-        def generateRandomPath(centerX, centerY, width, height, kFrames, order = 5.0):
+        def generateRandomPath(centerX, centerY, width, height, kFrames, order = 5.0, subsample = False):
             path = []
             if order < 4:
                 order = 4.0
             global subsamplingFactor 
             global widthOfPath
-            subsamplingFactor = max(int((order/kFrames)**1.5),1)*max(int(50.0/widthOfPath), 1)
+            if subsample:
+                subsamplingFactor = max(int((order/kFrames)**1.5),1)*max(int(50.0/widthOfPath), 1)
+            else:
+                subsamplingFactor = 1.0
             frames = int(subsamplingFactor * kFrames*1000)
             xIncrement = float(width) / frames
             x = [centerX - width/2 + i * float(width)/(order-1) for i in range(int(order))]

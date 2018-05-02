@@ -43,6 +43,9 @@
    </property>
   </widget>
   <widget class="QProgressBar" name="progressBarScore">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>700</x>
@@ -56,6 +59,9 @@
    </property>
   </widget>
   <widget class="QLabel" name="label_score">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>600</x>

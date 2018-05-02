@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
+    <width>713</width>
     <height>427</height>
    </rect>
   </property>
@@ -19,9 +19,9 @@
   <widget class="QTextEdit" name="e_velocityY">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>379</x>
      <y>130</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -45,9 +45,9 @@
   <widget class="QTextEdit" name="e_targetPressure">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>149</x>
      <y>290</y>
-     <width>100</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -55,9 +55,9 @@
   <widget class="QTextEdit" name="e_velocityX">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>139</x>
      <y>130</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -65,9 +65,9 @@
   <widget class="QTextEdit" name="e_positionY">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>379</x>
      <y>30</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -75,9 +75,9 @@
   <widget class="QTextEdit" name="e_positionX">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>139</x>
      <y>30</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -85,7 +85,7 @@
   <widget class="QLabel" name="label_positionX">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>20</y>
      <width>71</width>
      <height>43</height>
@@ -98,9 +98,9 @@
   <widget class="QLabel" name="label_velocityY">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>280</x>
      <y>120</y>
-     <width>71</width>
+     <width>81</width>
      <height>44</height>
     </rect>
    </property>
@@ -111,7 +111,7 @@
   <widget class="QLabel" name="label_velocityX">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>30</x>
      <y>120</y>
      <width>71</width>
      <height>43</height>
@@ -139,7 +139,7 @@
     <rect>
      <x>270</x>
      <y>20</y>
-     <width>81</width>
+     <width>91</width>
      <height>43</height>
     </rect>
    </property>
@@ -147,7 +147,7 @@
     <string>Position Y</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="e_steerWithTiltX">
+  <widget class="QCheckBox" name="c_steerWithTiltX">
    <property name="geometry">
     <rect>
      <x>160</x>
@@ -179,7 +179,7 @@
     <string>Steer with Tilt Y</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="e_steerWithTiltY">
+  <widget class="QCheckBox" name="c_steerWithTiltY">
    <property name="geometry">
     <rect>
      <x>370</x>
@@ -203,7 +203,7 @@
     <rect>
      <x>20</x>
      <y>170</y>
-     <width>121</width>
+     <width>131</width>
      <height>43</height>
     </rect>
    </property>
@@ -214,7 +214,7 @@
   <widget class="QLabel" name="label_height">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>280</x>
      <y>70</y>
      <width>81</width>
      <height>43</height>
@@ -227,9 +227,9 @@
   <widget class="QTextEdit" name="e_width">
    <property name="geometry">
     <rect>
-     <x>120</x>
+     <x>139</x>
      <y>80</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -237,7 +237,7 @@
   <widget class="QLabel" name="label_width">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>40</x>
      <y>70</y>
      <width>71</width>
      <height>43</height>
@@ -250,9 +250,9 @@
   <widget class="QTextEdit" name="e_height">
    <property name="geometry">
     <rect>
-     <x>360</x>
+     <x>379</x>
      <y>80</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -273,9 +273,9 @@
   <widget class="QLabel" name="label_tiltVelocityY">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>250</x>
      <y>220</y>
-     <width>101</width>
+     <width>111</width>
      <height>44</height>
     </rect>
    </property>
@@ -286,9 +286,9 @@
   <widget class="QTextEdit" name="e_tiltVelocityY">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>379</x>
      <y>230</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -296,9 +296,9 @@
   <widget class="QTextEdit" name="e_tiltVelocityX">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>149</x>
      <y>230</y>
-     <width>100</width>
+     <width>71</width>
      <height>31</height>
     </rect>
    </property>
@@ -306,9 +306,9 @@
   <widget class="QTextEdit" name="e_pressureDifficulty">
    <property name="geometry">
     <rect>
-     <x>400</x>
+     <x>379</x>
      <y>290</y>
-     <width>100</width>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -316,9 +316,9 @@
   <widget class="QLabel" name="label_pressureDifficulty">
    <property name="geometry">
     <rect>
-     <x>260</x>
+     <x>240</x>
      <y>280</y>
-     <width>131</width>
+     <width>141</width>
      <height>43</height>
     </rect>
    </property>
@@ -342,7 +342,7 @@
   <widget class="QPushButton" name="buttonResetPosition">
    <property name="geometry">
     <rect>
-     <x>490</x>
+     <x>530</x>
      <y>34</y>
      <width>111</width>
      <height>31</height>
@@ -357,7 +357,7 @@
     <rect>
      <x>20</x>
      <y>340</y>
-     <width>131</width>
+     <width>141</width>
      <height>43</height>
     </rect>
    </property>
@@ -368,11 +368,117 @@
   <widget class="QTextEdit" name="e_distanceDifficulty">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>169</x>
      <y>350</y>
-     <width>100</width>
+     <width>71</width>
      <height>31</height>
     </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_visualForm">
+   <property name="geometry">
+    <rect>
+     <x>550</x>
+     <y>90</y>
+     <width>91</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Visual Form</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="choice_visualForm">
+   <property name="geometry">
+    <rect>
+     <x>530</x>
+     <y>130</y>
+     <width>121</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="currentText">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_markPenTraj">
+   <property name="geometry">
+    <rect>
+     <x>440</x>
+     <y>170</y>
+     <width>161</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Mark Pen Trajectory</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="c_markPenTraj">
+   <property name="geometry">
+    <rect>
+     <x>610</x>
+     <y>180</y>
+     <width>21</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="c_playWithRobot">
+   <property name="geometry">
+    <rect>
+     <x>650</x>
+     <y>250</y>
+     <width>21</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="acceptDrops">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_playWithRobot">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>240</y>
+     <width>131</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Play With Robot</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonNaoExplain">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>280</y>
+     <width>181</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ask Nao To Explain Game</string>
    </property>
   </widget>
  </widget>

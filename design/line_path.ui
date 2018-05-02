@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>655</width>
-    <height>427</height>
+    <width>610</width>
+    <height>462</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -19,8 +19,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>357</y>
+     <x>400</x>
+     <y>400</y>
      <width>191</width>
      <height>32</height>
     </rect>
@@ -48,8 +48,8 @@
   <widget class="QPushButton" name="buttonResetToDefault">
    <property name="geometry">
     <rect>
-     <x>290</x>
-     <y>360</y>
+     <x>250</x>
+     <y>403</y>
      <width>141</width>
      <height>25</height>
     </rect>
@@ -193,7 +193,7 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>180</y>
+     <y>170</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -203,7 +203,7 @@
    <property name="geometry">
     <rect>
      <x>310</x>
-     <y>170</y>
+     <y>160</y>
      <width>131</width>
      <height>43</height>
     </rect>
@@ -216,7 +216,7 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>120</y>
+     <y>110</y>
      <width>111</width>
      <height>43</height>
     </rect>
@@ -229,7 +229,7 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>130</y>
+     <y>120</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -252,7 +252,7 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>230</y>
+     <y>220</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -261,8 +261,8 @@
   <widget class="QLabel" name="label_pathWidth">
    <property name="geometry">
     <rect>
-     <x>350</x>
-     <y>220</y>
+     <x>340</x>
+     <y>210</y>
      <width>101</width>
      <height>43</height>
     </rect>
@@ -275,7 +275,7 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>20</y>
+     <y>10</y>
      <width>101</width>
      <height>43</height>
     </rect>
@@ -288,7 +288,7 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>30</y>
+     <y>20</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -298,7 +298,7 @@
    <property name="geometry">
     <rect>
      <x>450</x>
-     <y>80</y>
+     <y>70</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -308,7 +308,7 @@
    <property name="geometry">
     <rect>
      <x>320</x>
-     <y>70</y>
+     <y>60</y>
      <width>111</width>
      <height>43</height>
     </rect>
@@ -330,7 +330,7 @@
     <string>Trace With Robot</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="e_traceWithRobot">
+  <widget class="QCheckBox" name="c_traceWithRobot">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -353,7 +353,7 @@
    <property name="geometry">
     <rect>
      <x>360</x>
-     <y>300</y>
+     <y>330</y>
      <width>161</width>
      <height>31</height>
     </rect>
@@ -362,7 +362,7 @@
     <string>Create Custom Path</string>
    </property>
   </widget>
-  <widget class="QCheckBox" name="e_playAgainstRobot">
+  <widget class="QCheckBox" name="c_playAgainstRobot">
    <property name="geometry">
     <rect>
      <x>170</x>
@@ -379,6 +379,42 @@
    </property>
    <property name="checked">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_naoSpeedFactor">
+   <property name="geometry">
+    <rect>
+     <x>450</x>
+     <y>270</y>
+     <width>100</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_naoSpeedFactor">
+   <property name="geometry">
+    <rect>
+     <x>320</x>
+     <y>260</y>
+     <width>131</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Nao Speed Factor</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonNaoExplain">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>400</y>
+     <width>181</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Ask Nao To Explain Game</string>
    </property>
   </widget>
  </widget>

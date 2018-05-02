@@ -23,16 +23,27 @@ class ConnexionToNao():
             textToSpeech = ALProxy("ALTextToSpeech", NAO_IP, PORT)   
             textToSpeech.setLanguage(LANGUAGE.capitalize())
 
-            if naoWriting:
-                if naoStanding:
-                    motionProxy.wbEnableEffectorControl(effector, True) #turn whole body motion control on
-                    postureProxy.goToPosture("Stand", 0.2)
-                else:
-                    motionProxy.wbEnableEffectorControl(effector, False) #turn whole body motion control off
-                    postureProxy.goToPosture("Crouch", 0.2)
-                    motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 0.5)
-                    motionProxy.setStiffnesses(["LHipYawPitch", "LHipRoll", "LHipPitch", "RHipYawPitch", "RHipRoll", "RHipPitch"], 0.8)
-                    
-                armJoints_standInit = motionProxy.getAngles(effector,True)
+            ConnexionToNao.resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector)
+                   
+            armJoints_standInit = motionProxy.getAngles(effector,True)
                    
         return myBroker, postureProxy, motionProxy, textToSpeech, armJoints_standInit
+
+    @staticmethod
+    def resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector):
+
+        if naoWriting:
+            if naoStanding:
+                motionProxy.wakeUp()
+         #       motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 1.0)
+        #        motionProxy.setStiffnesses(["LHipYawPitch", "LHipRoll", "LHipPitch", "RHipYawPitch", "RHipRoll", "RHipPitch"], 1.0)
+                motionProxy.wbEnableEffectorControl(effector, False) #turn whole body motion control on
+                postureProxy.goToPosture("Stand", 0.4)
+                motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 1.0)
+            else:
+                motionProxy.wakeUp()
+                motionProxy.wbEnableEffectorControl(effector, False) #turn whole body motion control off
+                postureProxy.goToPosture("Crouch", 0.4)
+                motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 1.0)
+        #        motionProxy.setStiffnesses(["LHipYawPitch", "LHipRoll", "LHipPitch", "RHipYawPitch", "RHipRoll", "RHipPitch"], 0.8)
+

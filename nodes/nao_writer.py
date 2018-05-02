@@ -29,8 +29,8 @@ def on_traj(traj):
             roll = 0.0 #rotate wrist to the right (about the x axis, w.r.t. robot frame)
 
         target = PoseStamped()
-        target_frame = traj.header.frame_id
-        target.header.frame_id = target_frame
+    #    target_frame = traj.header.frame_id
+    #    target.header.frame_id = target_frame
         
         points = []
         timeList = []
@@ -65,17 +65,16 @@ def on_traj(traj):
     else:
         rospy.loginfo("Got traj but not allowed to execute it because I've fallen")
 
-
 def scaleAndFlipPoints(matrix):
 
     # windows where the robot can move its arms
 #    rangeOfPossibleY = [-0.2, 0]
 #    rangeOfPossibleZ = [0.0, 0.15]
-    if naoStanding:
-        posRefRobot = 0.3
-    else:
-        posRefRobot = 0.2
-
+#    if naoStanding:
+ #       posRefRobot = 0.3
+  #  else:
+   #     posRefRobot = 0.2
+    
     vectY = [m[1] for m in matrix]
     vectZ = [m[2] for m in matrix]
     
@@ -95,6 +94,14 @@ def scaleAndFlipPoints(matrix):
 
     return points
 
+def on_robotInit(initPosture):
+    global hasFallen, posRefRobot
+    hasFallen = False;
+    rospy.loginfo('robot init with posture: ' + initPosture.data)
+    if initPosture.data == 'stand':
+        posRefRobot = 0.3
+    else:
+        posRefRobot = 0.2
 
 class FallResponder(ALModule):
   """ Module to react to robotHasFallen events """
@@ -134,7 +141,8 @@ if __name__ == "__main__":
 
     fallResponder = FallResponder("fallResponder",motionProxy,memoryProxy);
 
-    pub_traj = rospy.Subscriber(TRAJ_TOPIC, Path, on_traj)
+    sub_traj = rospy.Subscriber(TRAJ_TOPIC, Path, on_traj)
+    sub_robotInitialized = rospy.Subscriber(INITIALIZATION_TOPIC, String, on_robotInit)
     publish_robot_ready = rospy.Publisher(READY_TOPIC, Float32, queue_size=10)
     pub_traj_finished = rospy.Publisher(PATH_FINISHED_TOPIC, Empty, queue_size=10)
 
@@ -150,6 +158,7 @@ if __name__ == "__main__":
     effector = "RArm"
     axisMaskList = motion.AXIS_MASK_X+motion.AXIS_MASK_Y+motion.AXIS_MASK_Z+motion.AXIS_MASK_WX
     isAbsolute = True
-    
+    posRefRobot = 0.25
+
     rospy.spin()
     myBroker.shutdown()

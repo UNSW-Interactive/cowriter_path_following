@@ -18,6 +18,7 @@ from CustomPathSurface import CustomPathSurface
 from config_params import *
 from helpers import *
 
+
 FRAME = rospy.get_param('writing_surface_frame_id','writing_surface')  #Frame ID to publish points in
 
 
@@ -31,9 +32,9 @@ class TargetActivity(QtWidgets.QDialog):
 		self.customPathSurface = None
 
 		super(TargetActivity, self).__init__()
-		uic.loadUi('design/activity_target.ui', self)
+	#	uic.loadUi('design/activity_target.ui', self)
 		
-		self.resize(1500,800)
+		self.resize(1400,800)
 		self.show()
 
 		# add tactile surface
@@ -49,67 +50,84 @@ class TargetActivity(QtWidgets.QDialog):
 		self.publish_score = rospy.Publisher(SCORE_TOPIC, Float32, queue_size=10)
 
 		# add slots
-		self.buttonErase.clicked.connect(self.buttonEraseClicked)
+	#	self.buttonErase.clicked.connect(self.buttonEraseClicked)
 				
 
 	def resizeEvent(self, event):
 		if self.tactileSurface != None:
 			self.tactileSurface.setGeometry(QRect(0, Y_BEGINNING_TACTILE, self.frameGeometry().width(), self.frameGeometry().height()))
-		self.buttonErase.move(self.width() - self.buttonErase.width() - 10, self.buttonErase.y())
-
+#		self.buttonErase.move(self.width() - self.buttonErase.width() - 10, self.buttonErase.y())
+	'''
 	def buttonEraseClicked(self):
 
 		self.tactileSurface.erasePixmap()
-		self.updateScoreBar(0)
+#		self.updateScoreBar(0)
 		self.tactileSurface.target = None
-
+	'''
 	def callback_targetParamsCompleted(self):
-		self.tactileSurface.addTarget(self.targetParams)  
-		if not self.targetParams == None:
-			self.targetParams.close()
+		if self.targetParams == None:
+			return
+		self.tactileSurface.addTarget()  
+		self.tactileSurface.erasePixmap()
+		self.tactileSurface.target.updateWithParams(targetParams = self.targetParams)
+		self.targetParams.close()
+		self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 	def callback_targetPathCompleted(self):
-		self.tactileSurface.addTarget(self.targetParams)  
 		if self.targetPath == None:
 			return
-		self.tactileSurface.target.updatePath(self.targetPath.path)
-		self.tactileSurface.target.pressure_target = self.targetPath.pressure_target
-		self.tactileSurface.target.pressure_difficulty = self.targetPath.pressure_difficulty
-		self.tactileSurface.target.distance_difficulty = self.targetPath.distance_difficulty
+		
+		if self.targetPath.traceWithRobot:			
+			available = self.checkAndWaitForRobotAvailable(['WAITING_FOR_PATH'], 'WAITING_FOR_PATH')
+			if not available:
+				return 
+
 		self.targetPath.close()
+		self.tactileSurface.erasePixmap()
+
+		if len(self.targetPath.path) < 1:
+			return
+
+		self.tactileSurface.addTarget()  
+		self.tactileSurface.target.updateWithParams(targetPath = self.targetPath)
+		if self.targetPath.previewTraj:
+			self.tactileSurface.drawPathLine(self.targetPath.path, self.targetPath.pathWidth)
+		self.tactileSurface.activeNaoHead = self.targetPath.playAgainstRobot
+		if not self.targetPath.traceWithRobot:
+			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
+
 
 	def callback_linePathCompleted(self):
 		if self.linePath == None:
 			return
 
 		#	rospy.wait_for_service('get_nao_state')
-		if self.linePath.traceWithRobot:
-			available = self.checkRobotAvailable(acceptedStates=['WAITING_FOR_PATH'], requestState= 'WAITING_FOR_PATH')
+		if self.linePath.traceWithRobot:			
+			available = self.checkAndWaitForRobotAvailable(['WAITING_FOR_PATH'], 'WAITING_FOR_PATH')
 			if not available:
-				rospy.sleep(0.5)
-				available = self.checkRobotAvailable(['WAITING_FOR_PATH'], 'WAITING_FOR_PATH')
-				if not available:
-					return 
+				return 
 
 		self.linePath.close()
-		self.tactileSurface.addTarget(self.targetParams)
 		self.tactileSurface.erasePixmap()
-		self.updateScoreBar(0)
 		upperPath, lowerPath = PathGenerator.generatePathBorders(self.linePath.path, self.linePath.pathWidth)
+		if len(upperPath) < 1:
+			return
+		self.tactileSurface.addTarget()
+		self.tactileSurface.target.updateWithParams(linePath = self.linePath)
+#		self.updateScoreBar(0)
 		self.tactileSurface.drawPathBorders(upperPath, lowerPath)
-		self.tactileSurface.target.followPen = True
-		self.tactileSurface.target.activated = True
 		self.tactileSurface.markPenTrajectory = True
 		self.tactileSurface.activeNaoHead = self.linePath.playAgainstRobot
-		self.tactileSurface.target.pressure_difficulty = self.linePath.pressure_difficulty
-		self.tactileSurface.target.distance_difficulty = self.linePath.distance_difficulty
-	
+		if not self.linePath.traceWithRobot:
+			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
+
+
 	def callback_createCustomPath(self):
 		self.customPathSurface = CustomPathSurface(self)
 		self.customPathSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
 #		self.customPathSurface.speedFactor = self.targetPath.speedFactor
 		self.customPathSurface.show()
-
+	'''
 	def updateScoreBar(self, score, maxScore = 100):
 		scorePercent = score * 100 / maxScore
 		if scorePercent >= 100:
@@ -135,7 +153,7 @@ class TargetActivity(QtWidgets.QDialog):
 			self.publish_score.publish(score)
 		else:
 			self.publish_score.publish(0)
-
+	'''
 	def customPathReady(self, path):
 		if not self.linePath == None:
 			path = PathGenerator.adjustPath(path)
@@ -156,7 +174,7 @@ class TargetActivity(QtWidgets.QDialog):
 			else:
 				path = self.tactileSurface.target.path
 		
-		traj = make_traj_msg(path, 0.01, FRAME, 2.0, 3.0)
+		traj = make_traj_msg(path)
 		self.publish_path_shape.publish(traj)
 		self.tactileSurface.pathIndex = 0
 		self.tactileSurface.drawLineTimer.start(FRAME_TIME)
@@ -164,7 +182,7 @@ class TargetActivity(QtWidgets.QDialog):
 		
 
 	def on_robotReady(self, robot_delay):
-		rospy.sleep(robot_delay.data + 1.0)
+		rospy.sleep(robot_delay.data + TABLET_TO_ROBOT_DELAY)
 		self.tactileSurface.robotReady = True
 
 	def callback_RobotFinishWriting(self):
@@ -185,6 +203,13 @@ class TargetActivity(QtWidgets.QDialog):
 			return False
 		else: 
 			return True
+
+	def checkAndWaitForRobotAvailable(self, acceptedStates = [], requestState = None):
+		available = self.checkRobotAvailable(acceptedStates, requestState)
+		if not available:
+			rospy.sleep(0.5)
+			available = self.checkRobotAvailable(acceptedStates, requestState)
+		return available
 
 if __name__ == '__main__':
 	# init node

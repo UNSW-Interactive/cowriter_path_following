@@ -10,8 +10,9 @@ class TargetParams(QtWidgets.QDialog):
 
 	def __init__(self, parent=None):
 		
-		self.originalX = DEFAULT_X
-		self.originalY = DEFAULT_Y
+		self.parent = parent
+		self.x = DEFAULT_X
+		self.y = DEFAULT_Y
 		self.width = DEFAULT_WIDTH
 		self.height = DEFAULT_HEIGHT
 		self.pressure_target = DEFAULT_PRESSURE_TARGET
@@ -21,8 +22,11 @@ class TargetParams(QtWidgets.QDialog):
 		self.vy = DEFAULT_VY
 		self.steerWithTiltX = DEFAULT_STEER_TILTX
 		self.steerWithTiltY = DEFAULT_STEER_TILTY
+		self.markPenTraj = DEFAULT_MARK_PEN_TRAJ
 		self.tiltVelocityX = DEFAULT_TILT_VELX
 		self.tiltVelocityY = DEFAULT_TILT_VELY
+		self.visualForm = DEFAULT_TARGET_VISUAL_FORM
+		self.playWithRobot = DEFAULT_PLAY_WITH_ROBOT
 
 		super(TargetParams, self).__init__(parent)
 		uic.loadUi('design/target_params.ui', self)
@@ -32,15 +36,20 @@ class TargetParams(QtWidgets.QDialog):
 		self.buttonBox.rejected.connect(self.close)
 		self.buttonResetToDefault.clicked.connect(self.resetDefaultParams)
 		self.buttonResetPosition.clicked.connect(self.resetDefaultPosition)
+		self.buttonNaoExplain.clicked.connect(self.naoExplainGame)
+
+		self.choice_visualForm.addItem("red_dot")
+		self.choice_visualForm.addItem("nao_head")
+		self.choice_visualForm.addItem("dot+head")
 
 		self.show()
 
 
 	def targetParams_Complete(self):
 
-		try: self.originalX = int(self.e_positionX.toPlainText())
+		try: self.x = int(self.e_positionX.toPlainText())
 		except: pass
-		try: self.originalY = int(self.e_positionY.toPlainText())
+		try: self.y = int(self.e_positionY.toPlainText())
 		except: pass
 		try: self.width = float(self.e_width.toPlainText())
 		except: pass
@@ -56,15 +65,25 @@ class TargetParams(QtWidgets.QDialog):
 		except: pass
 		try: self.distance_difficulty = float(self.e_distanceDifficulty.toPlainText())
 		except: pass
+		try: self.visualForm = str(self.choice_visualForm.currentText())
+		except: pass
 
-		if self.e_steerWithTiltX.isChecked(): 
+		if self.c_steerWithTiltX.isChecked(): 
 			self.steerWithTiltX = True
 			self.tiltVelocityX = float(self.e_tiltVelocityX.toPlainText())
 		else: self.steerWithTiltX = False
-		if self.e_steerWithTiltY.isChecked(): 
+		if self.c_steerWithTiltY.isChecked(): 
 			self.steerWithTiltY = True
 			self.tiltVelocityY = float(self.e_tiltVelocityY.toPlainText())
 		else: self.steerWithTiltY = False
+
+		if self.c_markPenTraj.isChecked(): 
+			self.markPenTraj = True
+		else: self.markPenTraj = False
+
+		if self.c_playWithRobot.isChecked(): 
+			self.playWithRobot = True
+		else: self.playWithRobot = False
 
 		self.signal_targetParamsCompleted.emit()
 	
@@ -81,20 +100,45 @@ class TargetParams(QtWidgets.QDialog):
 		self.e_distanceDifficulty.setText(str(DEFAULT_DISTANCE_DIFFICULTY))
 		self.e_tiltVelocityX.setText(str(DEFAULT_TILT_VELX))
 		self.e_tiltVelocityY.setText(str(DEFAULT_TILT_VELY))
-		self.e_steerWithTiltX.setChecked(DEFAULT_STEER_TILTX)
-		self.e_steerWithTiltY.setChecked(DEFAULT_STEER_TILTY)
+		self.c_steerWithTiltX.setChecked(DEFAULT_STEER_TILTX)
+		self.c_steerWithTiltY.setChecked(DEFAULT_STEER_TILTY)
+		self.c_markPenTraj.setChecked(DEFAULT_MARK_PEN_TRAJ)
+		self.c_playWithRobot.setChecked(DEFAULT_PLAY_WITH_ROBOT)
 	
 	def resetDefaultPosition(self):
-        
+
 		self.e_positionX.setText(str(DEFAULT_X))
 		self.e_positionY.setText(str(DEFAULT_Y))
 		
 
+	def autoFillOldParams(self):
+		
+		self.e_positionX.setText(str(int(self.x)))
+		self.e_positionY.setText(str(int(self.y)))
+		self.e_width.setText(str(self.width))
+		self.e_height.setText(str(self.height))
+		self.e_velocityX.setText(str(self.vx))
+		self.e_velocityY.setText(str(self.vy))
+		self.e_targetPressure.setText(str(self.pressure_target))
+		self.e_pressureDifficulty.setText(str(self.pressure_difficulty))
+		self.e_distanceDifficulty.setText(str(self.distance_difficulty))
+		self.e_tiltVelocityX.setText(str(self.tiltVelocityX))
+		self.e_tiltVelocityY.setText(str(self.tiltVelocityY))
+		self.c_steerWithTiltX.setChecked(self.steerWithTiltX)
+		self.c_steerWithTiltY.setChecked(self.steerWithTiltY)
+		self.c_markPenTraj.setChecked(self.markPenTraj)
+		self.c_playWithRobot.setChecked(self.playWithRobot)
+
+	def naoExplainGame(self):
+		self.parent.publish_explainGame.publish(TARGET_CONTROL_GAME)
+
+
+'''
 	def setParamsFromTarget(self, target):
-    		if target == None:
-    				return
-		self.originalX = target.originalX
-		self.originalY = target.originalY
+		if target == None:
+			return
+		self.x = target.x
+		self.y = target.y
 		self.width = target.width
 		self.height = target.height
 		self.pressure_target = target.pressure_target
@@ -106,22 +150,6 @@ class TargetParams(QtWidgets.QDialog):
 		self.steerWithTiltY = target.steerWithTiltY
 		self.tiltVelocityX = target.tiltVelocityX
 		self.tiltVelocityY = target.tiltVelocityY
-
-	def autoFillOldParams(self):
-		
-		self.e_positionX.setText(str(int(self.originalX)))
-		self.e_positionY.setText(str(int(self.originalY)))
-		self.e_width.setText(str(self.width))
-		self.e_height.setText(str(self.height))
-		self.e_velocityX.setText(str(self.vx))
-		self.e_velocityY.setText(str(self.vy))
-		self.e_targetPressure.setText(str(self.pressure_target))
-		self.e_pressureDifficulty.setText(str(self.pressure_difficulty))
-		self.e_distanceDifficulty.setText(str(self.distance_difficulty))
-		self.e_tiltVelocityX.setText(str(self.tiltVelocityX))
-		self.e_tiltVelocityY.setText(str(self.tiltVelocityY))
-		self.e_steerWithTiltX.setChecked(self.steerWithTiltX)
-		self.e_steerWithTiltY.setChecked(self.steerWithTiltY)
-		
-
-	
+		self.visualForm = target.visualForm
+		self.markPenTraj = target.markPenTraj
+'''
