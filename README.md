@@ -1,6 +1,10 @@
 # cowriter_path_following
 ===========================
 
+This package contains a set of nodes that are used to manage the tablet interface for the path following activity, as well as nodes to control the robot behavior.
+
+Tested with ROS Kinetic on Ubuntu 16.04 (LTS)
+
 Install & Compile:
 ---------------
 ```
@@ -10,16 +14,16 @@ $ cd ../
 $ catkin_make
 ```
 
-Launch and run
------------------------------
+Running the tablet app:
+---------------
+In cowriter_path_following directory run `python "nodes/TargetActivity.py`to launch the writing app. 
+The main node that opens two windows, one for writing the other one to manage the parameters
 
+
+Launch the robot control code
+-----------------------------
 
 ```
 $ roslaunch cowriter_path_following launch.launch nao_port:=... nao_ip:=... [...other options]
-
-```
-from the cowriter_path_following directory run:
-```
-$ python "nodes/TargetActivity.py"
 
 ```
