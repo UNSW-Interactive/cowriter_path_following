@@ -59,6 +59,8 @@ class TargetPath(QtWidgets.QDialog):
 		self.choice_shape.addItem("Spiral")
 		self.choice_shape.addItem("Vertical Line")
 		self.choice_shape.addItem("Horizontal Line")
+		self.choice_shape.setCurrentIndex(1)
+		
 
 		self.choice_visualForm.addItem("red_dot")
 		self.choice_visualForm.addItem("nao_head")

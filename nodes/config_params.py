@@ -22,7 +22,7 @@ DEFAULT_TILT_VELY = 70.0
 DEFAULT_STEER_TILTX = False
 DEFAULT_STEER_TILTY = False
 #DEFAULT_MAX_SCORE = 10000
-DEFAULT_SPEED_FACTOR = 2.0
+DEFAULT_SPEED_FACTOR = 1.0
 DEFAULT_TIME = 10.0
 PIX_TO_MM = 0.1534
 FRAME_TIME = 10.0
@@ -73,7 +73,7 @@ naoConnected = rospy.get_param('/use_robot_in_interaction',True) #whether or not
 naoWriting = naoWriting and naoConnected #use naoConnected var as the stronger property
 naoStanding = rospy.get_param('/nao_standing', True) #whether or not the robot should stand or rest on its knies 
 LANGUAGE = rospy.get_param('/language','french')
-PATH_DB = rospy.get_param('/path_db', "/home/student/DB")
+PATH_DB = rospy.get_param('/path_db', "/home/nicolasm/DB")
 PATH_LETTERS_DB = rospy.get_param('/path_letters_db', "letters")
 
 PATH_FOLLOW_GAME = "path_follow_game"

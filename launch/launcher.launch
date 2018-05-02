@@ -7,7 +7,7 @@
     <arg name="language" default="french" />
     <arg name="use_robot_in_interaction" default="True" />
     <arg name="nao_writing" default="True" />
-    <arg name="path_db" default="/home/student/DB" />
+    <arg name="path_db" default="/home/nicolasm/DB" />
 
     <node pkg="tf" type="static_transform_publisher" name="map_footprint_broadcaster" args="0 0 0 0 0 0 /map /base_footprint 10"/>
     <node pkg="tf" type="static_transform_publisher" name="writing_surface_broadcaster" args="0 0 0 0 0 0 /map /writing_surface 10"/>

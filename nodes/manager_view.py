@@ -93,7 +93,7 @@ class Manager(QtWidgets.QDialog):
 					file.close()
 
 			else:
-				print("DB path doesn't exists, change it in with rosparam path_db")
+				print("DB path doesn't exists, change it in with rosparam path_db, path is : " +self.pathText.text())
 			
 			nbSameDrawing = 0
 			pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + ".csv"

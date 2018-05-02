@@ -91,7 +91,7 @@ class Target():
 				self.y = self.path[int(self.frame)][1]
 				if self.frame < len(self.pressureTargetList):
 					self.pressure_target = self.pressureTargetList[int(self.frame)]
-				if self.frame >= 0 or deviceDown:  # > to start on pendown, >= start immediately
+				if self.frame > 0 or deviceDown:  # > to start on pendown, >= start immediately
 					self.frame += 1
 			else:
 				self.finishedPath = True
@@ -168,6 +168,7 @@ class Target():
 			self.info += "\ntraceWithRobot: " + str(targetPath.traceWithRobot)
 			self.info += "\nplayAgainstRobot: " + str(targetPath.playAgainstRobot)
 			self.info += "\npath: " + str(targetPath.path)
+			self.info += "\npressureList: " + str(targetPath.pressureTargetList)
 
 		elif linePath != None:
 			self.behavior = 'follow_pen'
