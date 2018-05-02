@@ -18,6 +18,8 @@ Launch and run
 $ roslaunch cowriter_path_following launch.launch nao_port:=... nao_ip:=... [...other options]
 
 ```
-run:
+from the cowriter_path_following directory run:
+```
 $ python "nodes/TargetActivity.py"
-from the cowriter_path_following directory
+
+```
