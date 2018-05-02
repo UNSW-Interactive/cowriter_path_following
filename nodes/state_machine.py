@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-from nicolas_nao_ros.srv import *
+from cowriter_path_following.srv import *
 from string import upper
 import rospy
 from config_params import *

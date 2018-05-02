@@ -6,7 +6,7 @@ import rospy
 from nav_msgs.msg import Path
 from std_msgs.msg import Float32, String, Empty
 from geometry_msgs.msg import PoseStamped
-from nicolas_nao_ros.srv import getNaoState
+from cowriter_path_following.srv import getNaoState
 
 from TactileSurfaceArea import TactileSurfaceArea
 from manager_view import Manager
