@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-raw_input("promt: ")
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QObject, QRect, Qt, QSize, QDate
 from PyQt5.QtGui import QIcon
@@ -224,7 +223,6 @@ if __name__ == '__main__':
 	sys.exit(app.exec_())
 
 	rospy.spin()
-	raw_input("promt: ")
 
 
 
