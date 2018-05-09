@@ -14,13 +14,13 @@ $ cd ../
 $ catkin_make
 ```
 
-Running the tablet app:
+Running the tablet app nodes:
 ---------------
-In cowriter_path_following directory run `python "nodes/TargetActivity.py`to launch the writing app. 
+Run `cowriter_path_following/nodes/TargetActivity.py`to launch the writing app. 
 The main node that opens two windows, one for writing the other one to manage the parameters
 
 
-Launch the robot control code
+Launch the robot control nodes
 -----------------------------
 
 ```
