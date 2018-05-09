@@ -5,7 +5,7 @@ from nav_msgs.msg import Path
 import rospy
 import math
 from math import pi, cos, sin, atan2
-
+import os
 from Data import Data
 
 from Target import Target
@@ -81,7 +81,9 @@ class TactileSurfaceArea(QTableWidget):
 		self.targetPixmap = QPixmap(width, height)
 		self.targetPixmap.fill(Qt.transparent)
 
-		self.naoPixmap = QPixmap('design/robot.png').scaled(NAO_HEAD_SIZE,NAO_HEAD_SIZE)
+		my_path = os.path.abspath(os.path.dirname(__file__))
+		path = os.path.join(my_path, '../design/robot.png')
+		self.naoPixmap = QPixmap(path).scaled(NAO_HEAD_SIZE,NAO_HEAD_SIZE)
 
 		self.drawTarget()
 		self.viewport().update()
