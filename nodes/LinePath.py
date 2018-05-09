@@ -3,6 +3,7 @@ from PyQt5.QtCore import QObject, QRect, Qt, QDate, QDateTime,pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QPixmap, QPalette
 from config_params import *
 from PathGenerator import PathGenerator
+import os
 
 class LinePath(QtWidgets.QDialog):
 
@@ -28,7 +29,9 @@ class LinePath(QtWidgets.QDialog):
 		self.naoSpeedFactor = DEFAULT_NAO_SPEED_FACTOR
 
 		super(LinePath, self).__init__(parent)
-		uic.loadUi('design/line_path.ui', self)
+		my_path = os.path.abspath(os.path.dirname(__file__))
+		path = os.path.join(my_path, '../design/line_path.ui')
+		uic.loadUi(path, self)
 
 		# connect slots
 		self.buttonBox.accepted.connect(self.linePath_Complete)
@@ -76,6 +79,8 @@ class LinePath(QtWidgets.QDialog):
 		self.updatePath()
 
 	def linePath_Complete(self):
+		if self.parent.buttonSave.isEnabled():
+			self.parent.buttonSaveClicked()
 		self.updatePathParams()
 		self.signal_linePathCompleted.emit()
 	
@@ -134,7 +139,10 @@ class LinePath(QtWidgets.QDialog):
 	def naoExplainGame(self):
 		if self.c_playAgainstRobot.isChecked():
 			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
+			self.textGameDescription.setText(PATH_FOLLOW_VS_EXPLANATION)
+
 		else:
 			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
+			self.textGameDescription.setText(PATH_FOLLOW_GAME_EXPLANATION)
 
 

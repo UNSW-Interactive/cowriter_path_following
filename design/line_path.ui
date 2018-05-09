@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>610</width>
-    <height>462</height>
+    <width>565</width>
+    <height>598</height>
    </rect>
   </property>
   <property name="acceptDrops">
@@ -19,8 +19,8 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>400</x>
-     <y>400</y>
+     <x>360</x>
+     <y>430</y>
      <width>191</width>
      <height>32</height>
     </rect>
@@ -36,10 +36,13 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>10</y>
+     <y>40</y>
      <width>61</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Shape of the path</string>
    </property>
    <property name="text">
     <string>SHAPE</string>
@@ -48,11 +51,14 @@
   <widget class="QPushButton" name="buttonResetToDefault">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>403</y>
+     <x>210</x>
+     <y>430</y>
      <width>141</width>
      <height>25</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Reset settings to default</string>
    </property>
    <property name="text">
     <string>Reset To Default</string>
@@ -62,7 +68,7 @@
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>20</y>
+     <y>50</y>
      <width>121</width>
      <height>27</height>
     </rect>
@@ -78,10 +84,13 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>60</y>
+     <y>120</y>
      <width>41</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>The time it takes for the robot to simulate tracing the path.</string>
    </property>
    <property name="text">
     <string>Time</string>
@@ -91,7 +100,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>110</y>
+     <y>460</y>
      <width>61</width>
      <height>43</height>
     </rect>
@@ -104,7 +113,7 @@
    <property name="geometry">
     <rect>
      <x>40</x>
-     <y>160</y>
+     <y>500</y>
      <width>61</width>
      <height>43</height>
     </rect>
@@ -117,8 +126,8 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>70</y>
-     <width>100</width>
+     <y>130</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -127,7 +136,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>120</y>
+     <y>470</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -137,7 +146,7 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>170</y>
+     <y>510</y>
      <width>100</width>
      <height>31</height>
     </rect>
@@ -147,8 +156,8 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>270</y>
-     <width>100</width>
+     <y>209</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -157,10 +166,13 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>210</y>
+     <y>160</y>
      <width>41</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Total width of the entire path</string>
    </property>
    <property name="text">
     <string>Width</string>
@@ -170,10 +182,13 @@
    <property name="geometry">
     <rect>
      <x>50</x>
-     <y>260</y>
+     <y>200</y>
      <width>41</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Total height of the entire path</string>
    </property>
    <property name="text">
     <string>Height</string>
@@ -183,8 +198,8 @@
    <property name="geometry">
     <rect>
      <x>130</x>
-     <y>220</y>
-     <width>100</width>
+     <y>170</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -192,9 +207,9 @@
   <widget class="QTextEdit" name="e_pressureDifficulty">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>170</y>
-     <width>100</width>
+     <x>440</x>
+     <y>90</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -202,11 +217,15 @@
   <widget class="QLabel" name="label_pressureDifficulty">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>160</y>
+     <x>300</x>
+     <y>80</y>
      <width>131</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>How close the pressure has to be 
+ to the target pressure to make the dot green</string>
    </property>
    <property name="text">
     <string>Pressure Difficulty</string>
@@ -215,11 +234,14 @@
   <widget class="QLabel" name="label_targetPressure">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>110</y>
+     <x>310</x>
+     <y>40</y>
      <width>111</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>The constant pressure the need to be kept along the path</string>
    </property>
    <property name="text">
     <string>Target Pressure</string>
@@ -228,9 +250,9 @@
   <widget class="QTextEdit" name="e_targetPressure">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>120</y>
-     <width>100</width>
+     <x>440</x>
+     <y>50</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -238,47 +260,32 @@
   <widget class="QLabel" name="label_playAgainstRobot">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>350</y>
+     <x>320</x>
+     <y>170</y>
      <width>131</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>A robot head will traverse the path,
+ the goal is to get to the end of the path before the robot</string>
    </property>
    <property name="text">
     <string>Play Against Robot</string>
    </property>
   </widget>
-  <widget class="QTextEdit" name="e_pathWidth">
-   <property name="geometry">
-    <rect>
-     <x>450</x>
-     <y>220</y>
-     <width>100</width>
-     <height>31</height>
-    </rect>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_pathWidth">
-   <property name="geometry">
-    <rect>
-     <x>340</x>
-     <y>210</y>
-     <width>101</width>
-     <height>43</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Path Width</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="label_order">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>10</y>
+     <x>30</x>
+     <y>80</y>
      <width>101</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>For sinusoid: number of waves. 
+ For random splines: waviness of the spline.</string>
    </property>
    <property name="text">
     <string>Function Order</string>
@@ -287,9 +294,9 @@
   <widget class="QTextEdit" name="e_order">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>20</y>
-     <width>100</width>
+     <x>130</x>
+     <y>90</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -297,9 +304,9 @@
   <widget class="QTextEdit" name="e_sinusoidPhase">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>70</y>
-     <width>100</width>
+     <x>150</x>
+     <y>550</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -307,8 +314,8 @@
   <widget class="QLabel" name="label_sinusoidPhase">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>60</y>
+     <x>20</x>
+     <y>540</y>
      <width>111</width>
      <height>43</height>
     </rect>
@@ -320,11 +327,15 @@
   <widget class="QLabel" name="label_traceWithRobot">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>310</y>
+     <x>320</x>
+     <y>130</y>
      <width>121</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>The robot will pretend to trace the path 
+ before starting the game</string>
    </property>
    <property name="text">
     <string>Trace With Robot</string>
@@ -333,8 +344,8 @@
   <widget class="QCheckBox" name="c_traceWithRobot">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>320</y>
+     <x>450</x>
+     <y>140</y>
      <width>21</width>
      <height>22</height>
     </rect>
@@ -352,11 +363,15 @@
   <widget class="QPushButton" name="buttonCreateCustomPath">
    <property name="geometry">
     <rect>
-     <x>360</x>
-     <y>330</y>
+     <x>40</x>
+     <y>310</y>
      <width>161</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Opens a tablet surface on which you can draw a shape 
+ that will be transformed into a path</string>
    </property>
    <property name="text">
     <string>Create Custom Path</string>
@@ -365,8 +380,8 @@
   <widget class="QCheckBox" name="c_playAgainstRobot">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>360</y>
+     <x>450</x>
+     <y>180</y>
      <width>21</width>
      <height>22</height>
     </rect>
@@ -384,9 +399,9 @@
   <widget class="QTextEdit" name="e_naoSpeedFactor">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>270</y>
-     <width>100</width>
+     <x>440</x>
+     <y>220</y>
+     <width>81</width>
      <height>31</height>
     </rect>
    </property>
@@ -394,11 +409,14 @@
   <widget class="QLabel" name="label_naoSpeedFactor">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>260</y>
+     <x>310</x>
+     <y>210</y>
      <width>131</width>
      <height>43</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Regulates the speed of the robot head along the path</string>
    </property>
    <property name="text">
     <string>Nao Speed Factor</string>
@@ -407,16 +425,219 @@
   <widget class="QPushButton" name="buttonNaoExplain">
    <property name="geometry">
     <rect>
-     <x>20</x>
-     <y>400</y>
+     <x>330</x>
+     <y>380</y>
      <width>181</width>
      <height>31</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Make the robot explain the game, 
+ and update the game description above</string>
    </property>
    <property name="text">
     <string>Ask Nao To Explain Game</string>
    </property>
   </widget>
+  <widget class="QFrame" name="frame">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>271</width>
+     <height>361</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <property name="lineWidth">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_gameOptions_3">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>0</y>
+     <width>131</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>PATH OPTIONS</string>
+   </property>
+  </widget>
+  <widget class="QFrame" name="frame_2">
+   <property name="geometry">
+    <rect>
+     <x>280</x>
+     <y>0</y>
+     <width>281</width>
+     <height>261</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+   <property name="lineWidth">
+    <number>3</number>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_gameOptions">
+   <property name="geometry">
+    <rect>
+     <x>370</x>
+     <y>0</y>
+     <width>111</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>GAME OPTIONS</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_pathWidth">
+   <property name="geometry">
+    <rect>
+     <x>40</x>
+     <y>240</y>
+     <width>101</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Width of the path</string>
+   </property>
+   <property name="text">
+    <string>Path Width</string>
+   </property>
+  </widget>
+  <widget class="QTextEdit" name="e_pathWidth">
+   <property name="geometry">
+    <rect>
+     <x>130</x>
+     <y>250</y>
+     <width>81</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonLoad">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>430</y>
+     <width>71</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Load saved settings</string>
+   </property>
+   <property name="text">
+    <string>LOAD</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="buttonSave">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>430</y>
+     <width>71</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Save current settings</string>
+   </property>
+   <property name="text">
+    <string>SAVE</string>
+   </property>
+  </widget>
+  <widget class="QTextBrowser" name="textGameDescription">
+   <property name="geometry">
+    <rect>
+     <x>290</x>
+     <y>300</y>
+     <width>261</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Description of the game. 
+ Click Ask Nao To Explain Game to update the description</string>
+   </property>
+   <property name="html">
+    <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_gameDescription">
+   <property name="geometry">
+    <rect>
+     <x>360</x>
+     <y>260</y>
+     <width>121</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="toolTip">
+    <string>Description of the game. Click Ask Nao To Explain Game to update the description</string>
+   </property>
+   <property name="text">
+    <string>Game Description</string>
+   </property>
+  </widget>
+  <zorder>frame</zorder>
+  <zorder>frame_2</zorder>
+  <zorder>buttonBox</zorder>
+  <zorder>label_shape</zorder>
+  <zorder>buttonResetToDefault</zorder>
+  <zorder>choice_shape</zorder>
+  <zorder>label_time</zorder>
+  <zorder>label_centerX</zorder>
+  <zorder>label_centerY</zorder>
+  <zorder>e_time</zorder>
+  <zorder>e_centerX</zorder>
+  <zorder>e_centerY</zorder>
+  <zorder>e_height</zorder>
+  <zorder>label_width</zorder>
+  <zorder>label_height</zorder>
+  <zorder>e_width</zorder>
+  <zorder>e_pressureDifficulty</zorder>
+  <zorder>label_pressureDifficulty</zorder>
+  <zorder>label_targetPressure</zorder>
+  <zorder>e_targetPressure</zorder>
+  <zorder>label_playAgainstRobot</zorder>
+  <zorder>label_order</zorder>
+  <zorder>e_order</zorder>
+  <zorder>e_sinusoidPhase</zorder>
+  <zorder>label_sinusoidPhase</zorder>
+  <zorder>label_traceWithRobot</zorder>
+  <zorder>c_traceWithRobot</zorder>
+  <zorder>buttonCreateCustomPath</zorder>
+  <zorder>c_playAgainstRobot</zorder>
+  <zorder>e_naoSpeedFactor</zorder>
+  <zorder>label_naoSpeedFactor</zorder>
+  <zorder>buttonNaoExplain</zorder>
+  <zorder>label_gameOptions_3</zorder>
+  <zorder>label_gameOptions</zorder>
+  <zorder>label_pathWidth</zorder>
+  <zorder>e_pathWidth</zorder>
+  <zorder>buttonLoad</zorder>
+  <zorder>buttonSave</zorder>
+  <zorder>textGameDescription</zorder>
+  <zorder>label_gameDescription</zorder>
  </widget>
  <resources/>
  <connections/>

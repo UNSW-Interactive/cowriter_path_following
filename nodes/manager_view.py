@@ -22,23 +22,30 @@ import rospy
 class Manager(QtWidgets.QDialog):
 	def __init__(self, activity_w):
 		super(Manager, self).__init__()
-		uic.loadUi('design/manager_view.ui', self)
+		my_path = os.path.abspath(os.path.dirname(__file__))
+		path = os.path.join(my_path, '../design/manager_view.ui')
+		uic.loadUi(path, self)
+#		self.grabKeyboard()
+		
 		self.show()
 		self.activity = activity_w
 		self.childProfile = None
 		self.pathWriter = None
-
+		self.nbSameDrawing = 0
 
 		self.widgetNaoDialog.hide()
+		self.widgetNao.hide()
+		self.buttonSave.hide()
 
 		self.buttonErase.clicked.connect(self.buttonEraseClicked)
-		self.buttonAddTarget.clicked.connect(self.buttonAddTargetClicked)
+		self.buttonRestart.clicked.connect(self.buttonRestartClicked)
 		self.buttonTargetParams.clicked.connect(self.buttonTargetParamsClicked)
 		self.buttonTargetPath.clicked.connect(self.buttonTargetPathClicked)
 		self.buttonLinePath.clicked.connect(self.buttonLinePathClicked)
 		self.buttonProfile.clicked.connect(self.buttonProfileClicked)
 		self.buttonPathDialog.clicked.connect(self.buttonPathDialogClicked)
 		self.buttonSave.clicked.connect(self.buttonSaveClicked)
+		self.buttonRobotOptions.clicked.connect(self.buttonRobotOptionsClicked)
 
 		self.pathText.setText(PATH_DB)
 
@@ -56,6 +63,8 @@ class Manager(QtWidgets.QDialog):
 		self.publish_posture = rospy.Publisher(POSTURE_TOPIC, String, queue_size=10)
 		subscriber_dialog = rospy.Subscriber(DIALOG_TOPIC, String, self.addDialogOptions)
 
+		self.activity.tactileSurface.signalKeyBoardPress.connect(self.keyPressEvent)
+
 	def buttonProfileClicked(self):
 		self.childProfile = ChildProfile(self)
 		self.childProfile.signal_profileCompleted.connect(self.callback_profileCompleted)
@@ -71,7 +80,7 @@ class Manager(QtWidgets.QDialog):
 		self.pathWriter = self.pathText.text() + "/" + self.childProfile.lastName + "_" + self.childProfile.firstName + date
 
 	def buttonSaveClicked(self):
-		if self.activity.tactileSurface.target == None:
+		if self.activity.tactileSurface.target == None or len(self.activity.tactileSurface.data) < 1:
 			return
 
 		try:
@@ -93,14 +102,13 @@ class Manager(QtWidgets.QDialog):
 					file.close()
 
 			else:
-				print("DB path doesn't exists, change it in with rosparam path_db, path is : " +self.pathText.text())
+				print("DB path doesn't exists, change it in with rosparam path_db")
 			
-			nbSameDrawing = 0
 			pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + ".csv"
 
 			if os.path.isfile(pathDrawing):
-				pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + "_" + str(nbSameDrawing) + ".csv"
-				nbSameDrawing += 1
+				pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + "_" + str(self.nbSameDrawing) + ".csv"
+				self.nbSameDrawing += 1
 
 			file = open(pathDrawing, "w")
 			file.write(self.activity.tactileSurface.target.info + '\n')
@@ -131,6 +139,8 @@ class Manager(QtWidgets.QDialog):
 
 
 	def buttonEraseClicked(self):
+		if self.buttonSave.isEnabled():
+			self.buttonSaveClicked()
 		self.activity.tactileSurface.erasePixmap()
 #		self.activity.updateScoreBar(0)
 		self.activity.tactileSurface.target = None
@@ -138,8 +148,10 @@ class Manager(QtWidgets.QDialog):
 	def buttonUnexpectedFailClicked(self):
 		self.publish_fail.publish()
 
-	def buttonAddTargetClicked(self):
+	def buttonRestartClicked(self):
 #		self.activity.updateScoreBar(0)
+		if self.buttonSave.isEnabled():
+			self.buttonSaveClicked()
 		self.activity.tactileSurface.erasePixmap()
 		if not self.activity.tactileSurface.target == None:
 			behavior = self.activity.tactileSurface.target.behavior
@@ -220,3 +232,33 @@ class Manager(QtWidgets.QDialog):
 #		self.widgetNaoDialog.hide()
 		toSay = str(self.buttonOptionD.text())
 		self.publish_dialogOption.publish(toSay)
+
+	def buttonRobotOptionsClicked(self):
+		if self.buttonRobotOptions.text() == 'Hide Robot Options':
+			self.widgetNao.hide()
+			self.buttonRobotOptions.setText('Show Robot Options')
+		else:
+			self.widgetNao.show()
+			self.buttonRobotOptions.setText('Hide Robot Options')
+
+	def keyPressEvent(self, event):
+		if event.key() == QtCore.Qt.Key_R:
+			self.buttonRestartClicked()
+		if event.key() == QtCore.Qt.Key_E:
+			self.buttonEraseClicked()
+		if event.key() == QtCore.Qt.Key_O:
+			if self.buttonUnexpectedFail.isVisible():
+				self.buttonUnexpectedFailClicked()
+		if event.key() == QtCore.Qt.Key_A:
+			if self.buttonOptionA.isVisible():
+				self.buttonOptionAClicked()
+		if event.key() == QtCore.Qt.Key_B:
+			if self.buttonOptionB.isVisible():
+				self.buttonOptionBClicked()
+		if event.key() == QtCore.Qt.Key_C:
+			if self.buttonOptionC.isVisible():
+				self.buttonOptionCClicked()
+		if event.key() == QtCore.Qt.Key_D:
+			if self.buttonOptionD.isVisible():
+				self.buttonOptionDClicked()
+

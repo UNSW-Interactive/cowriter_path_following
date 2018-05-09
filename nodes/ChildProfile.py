@@ -1,6 +1,7 @@
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QObject, QRect, Qt, QDate, QDateTime,pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QPixmap, QPalette
+import os
 
 class ChildProfile(QtWidgets.QDialog):
 
@@ -15,7 +16,9 @@ class ChildProfile(QtWidgets.QDialog):
 		self.section = 4
 
 		super(ChildProfile, self).__init__(parent)
-		uic.loadUi('design/childProfile.ui', self)
+		my_path = os.path.abspath(os.path.dirname(__file__))
+		path = os.path.join(my_path, '../design/childProfile.ui')
+		uic.loadUi(path, self)
 
 		# connect slots
 		self.e_firstName.textChanged.connect(self.firstNameChanged)

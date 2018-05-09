@@ -7,7 +7,7 @@
     <arg name="language" default="french" />
     <arg name="use_robot_in_interaction" default="True" />
     <arg name="nao_writing" default="True" />
-    <arg name="path_db" default="/home/nicolasm/DB" />
+    <arg name="path_db" default="/home/student/DB" />
 
     <node pkg="tf" type="static_transform_publisher" name="map_footprint_broadcaster" args="0 0 0 0 0 0 /map /base_footprint 10"/>
     <node pkg="tf" type="static_transform_publisher" name="writing_surface_broadcaster" args="0 0 0 0 0 0 /map /writing_surface 10"/>
@@ -19,8 +19,8 @@
     <param name="nao_port" type="str" value="$(arg nao_port)"/>
     <param name="nao_standing" type="bool" value="$(arg nao_standing)"/>
     <param name="language" type="str" value="$(arg language)"/>
-    <param name="use_robot_in_interaction" type="str" value="$(arg use_robot_in_interaction)"/>
-    <param name="nao_writing" type="str" value="$(arg nao_writing)"/>
+    <param name="use_robot_in_interaction" type="bool" value="$(arg use_robot_in_interaction)"/>
+    <param name="nao_writing" type="bool" value="$(arg nao_writing)"/>
     <param name="path_db" type="str" value="$(arg path_db)"/>
     
 </launch>

@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+raw_input("promt: ")
 from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QObject, QRect, Qt, QSize, QDate
 from PyQt5.QtGui import QIcon
@@ -62,13 +64,13 @@ class TargetActivity(QtWidgets.QDialog):
 
 		self.tactileSurface.erasePixmap()
 #		self.updateScoreBar(0)
-		self.tactileSurface.target = None
+		self.tactileSurface.trarget = None
 	'''
 	def callback_targetParamsCompleted(self):
 		if self.targetParams == None:
 			return
-		self.tactileSurface.addTarget()  
 		self.tactileSurface.erasePixmap()
+		self.tactileSurface.addTarget()  
 		self.tactileSurface.target.updateWithParams(targetParams = self.targetParams)
 		self.targetParams.close()
 		self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
@@ -212,7 +214,7 @@ class TargetActivity(QtWidgets.QDialog):
 		return available
 
 if __name__ == '__main__':
-	# init node
+    	# init node
 	rospy.init_node("target_activity")
 
 
@@ -222,7 +224,7 @@ if __name__ == '__main__':
 	sys.exit(app.exec_())
 
 	rospy.spin()
-
+	raw_input("promt: ")
 
 
 

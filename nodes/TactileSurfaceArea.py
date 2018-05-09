@@ -4,6 +4,7 @@ from PyQt5.QtCore import QPoint, pyqtSignal, Qt, QTimer, QTime
 from nav_msgs.msg import Path
 import rospy
 import math
+from math import pi, cos, sin, atan2
 
 from Data import Data
 
@@ -11,9 +12,9 @@ from Target import Target
 from config_params import *
 
 class TactileSurfaceArea(QTableWidget):
-    	
 
-	signalRobotFinishWriting = pyqtSignal()
+	signalKeyBoardPress = pyqtSignal('QKeyEvent')
+#	signalRobotFinishWriting = pyqtSignal()
 
 	def __init__(self, parent = None):
 		QTableWidget.__init__(self, parent)
@@ -45,6 +46,7 @@ class TactileSurfaceArea(QTableWidget):
 		#self.scorePenalty = 0
 		self.robotReady = False
 		self.traceXMax = 0.0
+		self.traceIndexMax = 0
 		#self.scorePercent = 0.0
 		self.naoPosition = 0.0
 		self.naoSpeed = 1.0
@@ -53,6 +55,7 @@ class TactileSurfaceArea(QTableWidget):
 		self.data = []
 		self.time = QTime()
 
+	#	self.pathMatrix = []
 		
 		self.initPixmaps()
 		self.setAutoFillBackground(True)
@@ -62,6 +65,8 @@ class TactileSurfaceArea(QTableWidget):
 		self.timer.start(FRAME_TIME)
 		self.time.start()
 
+	def keyPressEvent(self, event):
+		self.signalKeyBoardPress.emit(event)
 
 	def initPixmaps(self):
 		width = 8000
@@ -165,10 +170,10 @@ class TactileSurfaceArea(QTableWidget):
 	def drawNaoHead(self):
 		if len(self.upperPath)>0:
 			x = self.upperPath[int(self.naoPosition)][0] 
-			y = (self.upperPath[int(self.naoPosition)][1] + self.lowerPath[int(self.naoPosition)][1])/2 - self.frameGeometry().height()*PATHS_SEPERATION/2
+			y = (self.upperPath[int(self.naoPosition)][1] + self.lowerPath[int(self.naoPosition)][1])/2 # - self.frameGeometry().height()*PATHS_SEPERATION/2
 		elif len(self.path)>0:
 			x = self.path[int(self.naoPosition)][0] 
-			y = self.path[int(self.naoPosition)][1] - self.frameGeometry().height()/2
+			y = self.path[int(self.naoPosition)][1] # - self.frameGeometry().height()/2
 
 		# prepare drawing
 		painter = QPainter(self.targetPixmap)
@@ -194,17 +199,18 @@ class TactileSurfaceArea(QTableWidget):
 			self.drawNaoHead()
 			if len(self.upperPath)>0:
 				if self.traceXMax > self.upperPath[0][0]:
-					speed = self.naoSpeed
+					speed = self.naoSpeedFactor
 					if self.naoPosition > 0:
 						speed *= 1 / math.sqrt(1 + ( (self.upperPath[int(self.naoPosition)][1]-self.upperPath[int(self.naoPosition)-1][1]) / (self.upperPath[int(self.naoPosition)][0]-self.upperPath[int(self.naoPosition)-1][0]) )**2 )
 					self.naoPosition += speed
 					if self.naoPosition >= len(self.upperPath)-1:
 						self.naoPosition = len(self.upperPath)-1
 			elif len(self.path)>0:
-				if self.traceXMax > self.path[0][0]:
-					speed = self.naoSpeed
-#					if self.naoPosition > 0:
-#						speed *= 1 / math.sqrt(1 + ( (self.path[int(self.naoPosition)][1]-self.path[int(self.naoPosition)-1][1]) / (self.path[int(self.naoPosition)][0]-self.path[int(self.naoPosition)-1][0]) )**2 )
+				if self.traceIndexMax > 0:
+					speed = self.naoSpeedFactor
+		#			if self.naoPosition > 0:
+		#				speed *= 1 / math.sqrt((self.path[int(self.naoPosition)][1]-self.path[int(self.naoPosition)-1][1])**2
+		#				 + (self.path[int(self.naoPosition)][0]-self.path[int(self.naoPosition)-1][0])**2 )
 					self.naoPosition += speed
 					if self.naoPosition >= len(self.path)-1:
 						self.naoPosition = len(self.path)-1
@@ -242,6 +248,7 @@ class TactileSurfaceArea(QTableWidget):
 		# update drawing
 		self.viewport().update()
 		self.data = []
+	#	self.pathMatrix = []
 		self.time.start()
 
 
@@ -254,37 +261,75 @@ class TactileSurfaceArea(QTableWidget):
 		self.pathIndex = 0
 		
 		self.traceXMax = path[0][0]
+		self.traceIndexMax = 0
 		self.naoPosition = 0.0
 
 		self.pathPen = QPen(QColor(0,0,255,30), pathWidth, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
 		self.pathPenMiddle = QPen(QColor(255,255,255), pathWidth - 6, Qt.SolidLine, Qt.RoundCap, Qt.RoundJoin)
 		if not self.parent.targetPath == None:
+			cX = self.parent.targetPath.centerX
+			cY = self.parent.targetPath.centerY
+			w = int(self.parent.targetPath.width + pathWidth)
+			h = int(self.parent.targetPath.height + pathWidth)
+	#		self.pathMatrix = [[False for i in range(h)] for j in range(w)]
 			if self.parent.targetPath.playAgainstRobot and not repeat:
 				self.naoSpeedFactor = self.parent.targetPath.naoSpeedFactor
-				for i in range(len(self.path)):
-					self.path[i][1] += self.frameGeometry().height()/4
+	#			for i in range(len(self.path)):
+	#				self.path[i][1] += self.frameGeometry().height()/4
 			if self.parent.targetPath.traceWithRobot:
 				self.parent.drawPathWithRobot(path)
 			else:
 				pathType = self.parent.targetPath.pathType
 				for i in range(len(self.path)-1):
-					self.drawLinePathSegment(path[i][0], path[i][1], path[i+1][0], path[i+1][1], pathType)
+					self.drawLinePathSegment(path[i][0], path[i][1], path[i+1][0], path[i+1][1], pathType, pathWidth, cX, cY, w, h)
 				if pathType == 'Double line': self.clearMiddlePath(path)
-				if self.parent.targetPath.playAgainstRobot:
-					for i in range(len(self.path)-1):
-						self.drawLinePathSegment(path[i][0], path[i][1] - self.frameGeometry().height()/2,
-							path[i+1][0], path[i+1][1] - self.frameGeometry().height()/2, pathType)
+	#			if self.parent.targetPath.playAgainstRobot:
+	#				for i in range(len(self.path)-1):
+	#					self.drawLinePathSegment(path[i][0], path[i][1] - self.frameGeometry().height()/2,
+	#						path[i+1][0], path[i+1][1] - self.frameGeometry().height()/2, pathType)
 				self.timer.start(FRAME_TIME)
+	#			pathPainter = QPainter(self.pixmapHandwriting)
+	#			pathPainter.setPen(QPen(QColor(0,255,0,5),1))
+	#			for x in range(len(self.pathMatrix)):
+	#				for y in range(len(self.pathMatrix[x])):
+	#					if self.pathMatrix[x][y]:
+	#						pathPainter.drawPoint(QPoint(x+cX-w/2,y+cY-h/2))
+
 		#		self.viewport().update()
 
-	def drawLinePathSegment(self, p1x, p1y, p2x, p2y, pathType):
+	def drawLinePathSegment(self, p1x, p1y, p2x, p2y, pathType, pathWidth=0, cX=0, cY=0, w=0, h=0):
 		pathPainter = QPainter(self.pixmapHandwriting)
 		if pathType != 'Middle':
 			pathPainter.setPen(self.pathPen)
 			pathPainter.drawLine(QPoint(p1x,p1y), QPoint(p2x,p2y))
+			'''
+			angle = atan2((p2y-p1y),(p2x-p1x))
+			p2x_1 = p2x + pathWidth/2*sin(angle)
+			p2y_1 = p2y - pathWidth/2*cos(angle)
+			p2x_2 = p2x - pathWidth/2*sin(angle)
+			p2y_2 = p2y + pathWidth/2*cos(angle)			
+			
+			p1x_1 = p1x + pathWidth/2*sin(angle)
+			p1y_1 = p1y - pathWidth/2*cos(angle)
+			p1x_2 = p1x - pathWidth/2*sin(angle)
+			p1y_2 = p1y + pathWidth/2*cos(angle)
+
+			maxX = max(p1x_1,p1x_2,p2x_1,p2x_2)
+			maxY = max(p1y_1,p1y_2,p2y_1,p2y_2)
+			minX = min(p1x_1,p1x_2,p2x_1,p2x_2)
+			minY = min(p1y_1,p1y_2,p2y_1,p2y_2)
+
+			maxX = min(int(maxX - cX + w/2),w)
+			minX = max(int(minX - cX + w/2),0)
+			maxY = min(int(maxY - cY + h/2),h)
+			minY = max(int(minY - cY + h/2),0)
+			for x in range(minX,maxX):
+				for y in range(minY, maxY):
+					self.pathMatrix[x][y] = True
+			'''
 		if pathType == 'Double line' or pathType == 'Middle':
 			pathPainter.setPen(self.pathPenMiddle)
-			pathPainter.drawLine(QPoint(p1x+0*(p1x-p2x),p1y+0*(p1y-p2y)), QPoint(p2x,p2y))
+			pathPainter.drawLine(QPoint(p1x,p1y), QPoint(p2x,p2y))
 		pathPainter.end()
 		self.viewport().update()
 
@@ -292,6 +337,7 @@ class TactileSurfaceArea(QTableWidget):
 		self.timer.stop()
 
 		self.path = []
+		self.pathMatrix = []
 		self.upperPath = upperPath
 		self.lowerPath = lowerPath
 		self.pathIndex = 0
@@ -307,9 +353,9 @@ class TactileSurfaceArea(QTableWidget):
 		if not self.parent.linePath == None:
 			if self.parent.linePath.playAgainstRobot and not repeat:
 				self.naoSpeedFactor = self.parent.linePath.naoSpeedFactor
-				for i in range(len(self.upperPath)):
-					self.upperPath[i][1] += self.frameGeometry().height()*PATHS_SEPERATION/4
-					self.lowerPath[i][1] += self.frameGeometry().height()*PATHS_SEPERATION/4
+	#			for i in range(len(self.upperPath)):
+	#				self.upperPath[i][1] += self.frameGeometry().height()*PATHS_SEPERATION/4
+	#				self.lowerPath[i][1] += self.frameGeometry().height()*PATHS_SEPERATION/4
 			if self.parent.linePath.traceWithRobot:
 				self.parent.drawPathWithRobot(path)
 			else:
@@ -318,12 +364,12 @@ class TactileSurfaceArea(QTableWidget):
 				for i in range(len(upperPath)-1):
 					pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1]), QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1]))
 					pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1]), QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1]))
-				if self.parent.linePath.playAgainstRobot:
-					for i in range(len(upperPath)-1):
-						pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2), 
-							QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
-						pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2), 
-							QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
+	#			if self.parent.linePath.playAgainstRobot:
+	#				for i in range(len(upperPath)-1):
+	#					pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2), 
+	#						QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
+	#					pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2), 
+	#						QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
 				pathPainter.end()
 				self.timer.start(FRAME_TIME)
 				self.viewport().update()
@@ -342,11 +388,11 @@ class TactileSurfaceArea(QTableWidget):
 			pathPainter.setPen(self.pathPen)
 			pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1]), QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1]))
 			pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1]), QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1]))
-			if self.parent.linePath != None and self.parent.linePath.playAgainstRobot:
-				pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2),
-					QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
-				pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2),
-					QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
+	#		if self.parent.linePath != None and self.parent.linePath.playAgainstRobot:
+	#			pathPainter.drawLine(QPoint(self.upperPath[i][0],self.upperPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2),
+	#				QPoint(self.upperPath[i+1][0],self.upperPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
+	#			pathPainter.drawLine(QPoint(self.lowerPath[i][0],self.lowerPath[i][1] - self.frameGeometry().height()*PATHS_SEPERATION/2),
+	#				QPoint(self.lowerPath[i+1][0],self.lowerPath[i+1][1] - self.frameGeometry().height()*PATHS_SEPERATION/2))
 			pathPainter.end()
 			self.viewport().update()
 
@@ -359,9 +405,9 @@ class TactileSurfaceArea(QTableWidget):
 				
 			self.drawLinePathSegment(self.path[i][0], self.path[i][1],
 				 self.path[i+1][0], self.path[i+1][1], pathType)
-			if self.parent.targetPath != None and self.parent.targetPath.playAgainstRobot:
-				self.drawLinePathSegment(self.path[i][0], self.path[i][1] - self.frameGeometry().height()/2,
-					self.path[i+1][0], self.path[i+1][1] - self.frameGeometry().height()/2, pathType)
+	#		if self.parent.targetPath != None and self.parent.targetPath.playAgainstRobot:
+	#			self.drawLinePathSegment(self.path[i][0], self.path[i][1] - self.frameGeometry().height()/2,
+	#				self.path[i+1][0], self.path[i+1][1] - self.frameGeometry().height()/2, pathType)
 
 	def clearMiddlePath(self, path):
 		for i in range(len(self.path)-1):
@@ -387,23 +433,37 @@ class TactileSurfaceArea(QTableWidget):
 			i = int(x/deltaX)
 			if self.penY > self.upperPath[i][1] or self.penY < self.lowerPath[i][1]:
 				return 0
-
 			if self.penX > self.traceXMax + PEN_ERROR_MARGIN:
 				return 0
 			else:
 				self.traceXMax = min(max(self.penX, self.traceXMax),self.upperPath[-1][0])
 
 		elif len(self.path) > 1:
-			if self.penX < self.path[0][0] or self.penX > self.path[-1][0]:
-				return 0
-			if self.penX > self.traceXMax + PEN_ERROR_MARGIN:
+
+			if self.parent.targetPath != None:
+				cX = self.parent.targetPath.centerX
+				cY = self.parent.targetPath.centerY
+				pathWidth = self.parent.targetPath.pathWidth
+				w = int(self.parent.targetPath.width + pathWidth)
+				h = int(self.parent.targetPath.height + pathWidth)
+				newX = int(self.penX -cX+w/2) 
+				newY = int(self.penY -cY+h/2) 
+				if newX < 0 or newY < 0 or newX >= w or newY >= h:
+					return 0
+			#	elif (self.pathMatrix[newX-10:newX+10][newY-10:newY+10] == [[False for i in range(10)]for j in range(10)]):
+			#		return 0
+
+			if self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) >= (pathWidth/2 + PEN_ERROR_MARGIN):
 				return 0
 			else:
-				self.traceXMax = min(max(self.penX, self.traceXMax),self.path[-1][0])
+				while (self.traceIndexMax < (len(self.path)-1) and self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) < (pathWidth/2 )):
+					self.traceIndexMax += 1
+		#		self.traceXMax = min(max(self.penX, self.traceXMax),self.path[-1][0])
 		
 		return 120*pressureScore
 
-
+	def getPenDist(self, point, penX, penY):
+		return math.sqrt((point[0]-penX)**2 + (point[1]-penY)**2)
 
 	def updateBrush(self, event):
 		#hue, saturation, value, alpha;

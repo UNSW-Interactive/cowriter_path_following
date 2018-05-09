@@ -11,22 +11,22 @@ class ConnexionToNao():
     @staticmethod
     def setConnexion(naoConnected, naoWriting, naoStanding, NAO_IP, PORT, LANGUAGE, effector):
         
-        if naoConnected:
-            myBroker = ALBroker("myBroker", #I'm not sure that pyrobots doesn't already have one of these open called NAOqi?
-                    "0.0.0.0",   # listen to anyone
-                    0,           # find a free port and use it
-                    NAO_IP,      # parent broker IP
-                    PORT)        # parent broker port
-            motionProxy = ALProxy("ALMotion", NAO_IP, PORT)
-        
-            postureProxy = ALProxy("ALRobotPosture", NAO_IP, PORT)
-            textToSpeech = ALProxy("ALTextToSpeech", NAO_IP, PORT)   
-            textToSpeech.setLanguage(LANGUAGE.capitalize())
+    #    if naoConnected:
+        myBroker = ALBroker("myBroker", #I'm not sure that pyrobots doesn't already have one of these open called NAOqi?
+                "0.0.0.0",   # listen to anyone
+                0,           # find a free port and use it
+                NAO_IP,      # parent broker IP
+                PORT)        # parent broker port
+        motionProxy = ALProxy("ALMotion", NAO_IP, PORT)
+    
+        postureProxy = ALProxy("ALRobotPosture", NAO_IP, PORT)
+        textToSpeech = ALProxy("ALTextToSpeech", NAO_IP, PORT)   
+        textToSpeech.setLanguage(LANGUAGE.capitalize())
 
-            ConnexionToNao.resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector)
-                   
-            armJoints_standInit = motionProxy.getAngles(effector,True)
-                   
+        ConnexionToNao.resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector)
+                
+        armJoints_standInit = motionProxy.getAngles(effector,True)
+                
         return myBroker, postureProxy, motionProxy, textToSpeech, armJoints_standInit
 
     @staticmethod

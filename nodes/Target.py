@@ -168,7 +168,6 @@ class Target():
 			self.info += "\ntraceWithRobot: " + str(targetPath.traceWithRobot)
 			self.info += "\nplayAgainstRobot: " + str(targetPath.playAgainstRobot)
 			self.info += "\npath: " + str(targetPath.path)
-			self.info += "\npressureList: " + str(targetPath.pressureTargetList)
 
 		elif linePath != None:
 			self.behavior = 'follow_pen'

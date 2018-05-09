@@ -26,7 +26,7 @@ class PathGenerator():
                     x = centerX + (-xSize/2 + db.x[int(i*timeStep/slowDownFactor)]) * scale
                     y = centerY + ( ySize/2 - db.y[int(i*timeStep/slowDownFactor)]) * scale
                     path.append([x,y])
-                    pressureTargetList.append(db.pressure[int(i*timeStep/slowDownFactor)]/1000.0)
+                    pressureTargetList.append(db.pressure[int(i*timeStep/slowDownFactor)])
             except: print('unsupported file')
             return path, pressureTargetList
 

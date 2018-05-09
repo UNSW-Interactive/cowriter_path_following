@@ -2,7 +2,7 @@ from PyQt5 import uic, QtWidgets
 from PyQt5.QtCore import QObject, QRect, Qt, QDate, QDateTime,pyqtSignal
 from PyQt5.QtGui import QPainter, QColor, QFont, QBrush, QPen, QPixmap, QPalette
 from config_params import *
-
+import os
 
 class TargetParams(QtWidgets.QDialog):
 
@@ -29,7 +29,9 @@ class TargetParams(QtWidgets.QDialog):
 		self.playWithRobot = DEFAULT_PLAY_WITH_ROBOT
 
 		super(TargetParams, self).__init__(parent)
-		uic.loadUi('design/target_params.ui', self)
+		my_path = os.path.abspath(os.path.dirname(__file__))
+		path = os.path.join(my_path, '../design/target_params.ui')
+		uic.loadUi(path, self)
 
 		# connect slots
 		self.buttonBox.accepted.connect(self.targetParams_Complete)
@@ -46,6 +48,9 @@ class TargetParams(QtWidgets.QDialog):
 
 
 	def targetParams_Complete(self):
+
+		if self.parent.buttonSave.isEnabled():
+			self.parent.buttonSaveClicked()
 
 		try: self.x = int(self.e_positionX.toPlainText())
 		except: pass

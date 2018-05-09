@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>767</width>
-    <height>467</height>
+    <height>489</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>620</x>
-     <y>30</y>
+     <y>40</y>
      <width>101</width>
      <height>81</height>
     </rect>
@@ -48,6 +48,11 @@
      <height>81</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Open the menu for creating a path that the user has to follow 
+ (in this activity the tablet detects when the pen is outside the path 
+ and the trace of the pen becomes red)</string>
+   </property>
    <property name="text">
     <string/>
    </property>
@@ -68,7 +73,7 @@
     <bool>false</bool>
    </property>
   </widget>
-  <widget class="QPushButton" name="buttonAddTarget">
+  <widget class="QPushButton" name="buttonRestart">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -76,6 +81,9 @@
      <width>81</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Restart the current activity</string>
    </property>
    <property name="text">
     <string>RESTART</string>
@@ -101,6 +109,9 @@
      <width>81</width>
      <height>81</height>
     </rect>
+   </property>
+   <property name="toolTip">
+    <string>Open the menu for creating a target that the user can control with pen tilt</string>
    </property>
    <property name="text">
     <string/>
@@ -131,220 +142,17 @@
      <height>81</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Open the menu for creating a path that the target follows and the user has to follow the target 
+ (unless target follows pen is check in which case the target follows the pen 
+ and the user has to follow the path at his own pace)</string>
+   </property>
    <property name="text">
     <string/>
    </property>
    <property name="icon">
     <iconset>
      <normaloff>target_path.png</normaloff>target_path.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>75</width>
-     <height>75</height>
-    </size>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonUnexpectedFail">
-   <property name="geometry">
-    <rect>
-     <x>630</x>
-     <y>150</y>
-     <width>81</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>unexpected_fail.png</normaloff>unexpected_fail.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>75</width>
-     <height>75</height>
-    </size>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QWidget" name="widgetNaoDialog" native="true">
-   <property name="geometry">
-    <rect>
-     <x>20</x>
-     <y>220</y>
-     <width>311</width>
-     <height>211</height>
-    </rect>
-   </property>
-   <widget class="QWidget" name="gridLayoutWidget">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>10</y>
-      <width>281</width>
-      <height>181</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="layoutNaoDialog">
-     <item row="2" column="0">
-      <widget class="QPushButton" name="buttonOptionB">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>buttonOptionB</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QPushButton" name="buttonOptionC">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>buttonOptionC</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QPushButton" name="buttonOptionD">
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>buttonOptionD</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_naoDialogOptions">
-       <property name="text">
-        <string>NAO DIALOG OPTIONS</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="buttonOptionA">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>0</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="baseSize">
-        <size>
-         <width>0</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>buttonOptionA</string>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>20</width>
-         <height>20</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>false</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
-  <widget class="QPushButton" name="buttonNaoStand">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>320</y>
-     <width>101</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>NAO STAND</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>75</width>
-     <height>75</height>
-    </size>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonNaoSit">
-   <property name="geometry">
-    <rect>
-     <x>350</x>
-     <y>240</y>
-     <width>101</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>NAO SIT</string>
    </property>
    <property name="iconSize">
     <size>
@@ -368,6 +176,9 @@
      <height>26</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Select the path where the user data is going to be saved</string>
+   </property>
    <property name="text">
     <string>Select Path DB</string>
    </property>
@@ -381,6 +192,9 @@
      <height>26</height>
     </rect>
    </property>
+   <property name="toolTip">
+    <string>Path where user data is going to be saved</string>
+   </property>
    <property name="text">
     <string>/home/student/DB</string>
    </property>
@@ -389,7 +203,7 @@
    <property name="geometry">
     <rect>
      <x>490</x>
-     <y>30</y>
+     <y>40</y>
      <width>101</width>
      <height>81</height>
     </rect>
@@ -437,6 +251,362 @@
    </property>
    <property name="checked">
     <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QWidget" name="widgetNao" native="true">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>260</y>
+     <width>641</width>
+     <height>221</height>
+    </rect>
+   </property>
+   <widget class="QWidget" name="widgetNaoDialog" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>20</y>
+      <width>341</width>
+      <height>211</height>
+     </rect>
+    </property>
+    <widget class="QWidget" name="gridLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>281</width>
+       <height>181</height>
+      </rect>
+     </property>
+     <layout class="QGridLayout" name="layoutNaoDialog">
+      <item row="2" column="0">
+       <widget class="QPushButton" name="buttonOptionB">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>buttonOptionB</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0">
+       <widget class="QPushButton" name="buttonOptionC">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>buttonOptionC</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="buttonOptionD">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>buttonOptionD</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label_naoDialogOptions">
+        <property name="text">
+         <string>NAO DIALOG OPTIONS</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="buttonOptionA">
+        <property name="enabled">
+         <bool>true</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>30</height>
+         </size>
+        </property>
+        <property name="baseSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>buttonOptionA</string>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="checkable">
+         <bool>false</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <widget class="QLabel" name="label_key_A">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>50</y>
+       <width>31</width>
+       <height>43</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(A)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_key_B">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>80</y>
+       <width>31</width>
+       <height>43</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(B)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_key_C">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>150</y>
+       <width>31</width>
+       <height>43</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(D)</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_key_D">
+     <property name="geometry">
+      <rect>
+       <x>300</x>
+       <y>120</y>
+       <width>31</width>
+       <height>43</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>(C)</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="buttonNaoSit">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>60</y>
+      <width>101</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Make the robot sit</string>
+    </property>
+    <property name="text">
+     <string>NAO SIT</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>75</width>
+      <height>75</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonUnexpectedFail">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>110</y>
+      <width>81</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Use when robot behaves unexpectedly</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>unexpected_fail.png</normaloff>unexpected_fail.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>75</width>
+      <height>75</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_shape">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>70</y>
+      <width>111</width>
+      <height>43</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>RESTART ROBOT</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="buttonNaoStand">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>140</y>
+      <width>101</width>
+      <height>61</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Make the robot stand</string>
+    </property>
+    <property name="text">
+     <string>NAO STAND</string>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>75</width>
+      <height>75</height>
+     </size>
+    </property>
+    <property name="checkable">
+     <bool>true</bool>
+    </property>
+    <property name="checked">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_key_O">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>130</y>
+      <width>31</width>
+      <height>43</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>(O)</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QPushButton" name="buttonRobotOptions">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>220</y>
+     <width>171</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Show Robot Options</string>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>75</width>
+     <height>75</height>
+    </size>
+   </property>
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_key_R">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>0</y>
+     <width>31</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>(R)</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_key_E">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>0</y>
+     <width>31</width>
+     <height>43</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>(E)</string>
    </property>
   </widget>
  </widget>
