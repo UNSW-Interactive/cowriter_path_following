@@ -10,6 +10,7 @@ subsamplingFactor = 13
 widthOfPath = 50.0
 
 class PathGenerator():
+        # generate path and target pressure along path from letters data
         @staticmethod
         def generateFromDB(file_name, centerX, centerY, width, height, kFrames, slowDownFactor = 1.0):
             path = []
@@ -104,11 +105,16 @@ class PathGenerator():
                 path.append([x,y])
             return path
             
+
+        # generate a spline path using a number of points (= order)
+        # which are regularly spaced on x, and randomly sampled
+        # from gaussian distribution on y
         @staticmethod
         def generateRandomPath(centerX, centerY, width, height, kFrames, order = 5.0, subsample = False):
             path = []
             if order < 4:
                 order = 4.0
+
             global subsamplingFactor 
             global widthOfPath
             if subsample:
@@ -117,7 +123,7 @@ class PathGenerator():
                 subsamplingFactor = 1.0
             frames = int(subsamplingFactor * kFrames*1000)
             xIncrement = float(width) / frames
-            x = [centerX - width/2 + i * float(width)/(order-1) for i in range(int(order))]
+            x = [centerX - width/2 + i * float(width)/(int(order-1)) for i in range(int(order))]
             y = [centerY for i in x]
             for i in range(len(x)):
                 notInRange = True
@@ -131,6 +137,9 @@ class PathGenerator():
             y = interpolate.splev(x, tck, der=0)
             path = [[i,j] for i,j in zip(x,y)]
             return path
+
+
+# methods for generating upper and lower path functions
 
         @staticmethod
         def generateSmoothPath(path, kFrames = -1):

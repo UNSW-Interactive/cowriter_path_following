@@ -20,7 +20,6 @@ class Target():
 		self.tiltVelocityX = DEFAULT_TILT_VELX
 		self.tiltVelocityY = DEFAULT_TILT_VELY
 #		self.maxScore = DEFAULT_MAX_SCORE
-		self.visualForm = DEFAULT_TARGET_VISUAL_FORM
 		self.markPenTraj = DEFAULT_MARK_PEN_TRAJ
 		self.info = 'info: '
 		

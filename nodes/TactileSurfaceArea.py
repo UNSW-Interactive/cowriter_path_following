@@ -423,8 +423,11 @@ class TactileSurfaceArea(QTableWidget):
 		self.robotReady = False
 
 	def getHue(self):
-		pressureScore = self.target.getPressureScore(self.pressure)
-		self.naoSpeed = self.naoSpeedFactor*(1.0 - 0.7*pressureScore)
+		if self.target != None:
+			pressureScore = self.target.getPressureScore(self.pressure)
+			self.naoSpeed = self.naoSpeedFactor*(1.0 - 0.7*pressureScore)
+		else:
+			pressureScore = 1.0
 
 		if len(self.upperPath) > 1:
 			if self.penX < self.upperPath[0][0] or self.penX > self.upperPath[-1][0]:
@@ -448,17 +451,17 @@ class TactileSurfaceArea(QTableWidget):
 				pathWidth = self.parent.targetPath.pathWidth
 				w = int(self.parent.targetPath.width + pathWidth)
 				h = int(self.parent.targetPath.height + pathWidth)
-				newX = int(self.penX -cX+w/2) 
-				newY = int(self.penY -cY+h/2) 
+				newX = int(self.penX -cX+w/2 + PEN_ERROR_MARGIN) 
+				newY = int(self.penY -cY+h/2 + PEN_ERROR_MARGIN) 
 				if newX < 0 or newY < 0 or newX >= w or newY >= h:
 					return 0
 			#	elif (self.pathMatrix[newX-10:newX+10][newY-10:newY+10] == [[False for i in range(10)]for j in range(10)]):
 			#		return 0
 
-			if self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) >= (pathWidth/2 + PEN_ERROR_MARGIN):
+			if self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) >= (pathWidth/2 + PEN_ERROR_MARGIN + 5):
 				return 0
 			else:
-				while (self.traceIndexMax < (len(self.path)-1) and self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) < (pathWidth/2 )):
+				while (self.traceIndexMax < (len(self.path)-1) and self.getPenDist(self.path[self.traceIndexMax], self.penX, self.penY) < (pathWidth/2 + PEN_ERROR_MARGIN)):
 					self.traceIndexMax += 1
 		#		self.traceXMax = min(max(self.penX, self.traceXMax),self.path[-1][0])
 		

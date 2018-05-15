@@ -20,17 +20,15 @@ from config_params import *
 from helpers import *
 
 
-FRAME = rospy.get_param('writing_surface_frame_id','writing_surface')  #Frame ID to publish points in
-
-
 class TargetActivity(QtWidgets.QDialog):
 
-	def __init__(self):
+	def __init__(self, useRobot):
 		self.tactileSurface = None
 		self.targetParams = None
 		self.targetPath = None
 		self.linePath = None
 		self.customPathSurface = None
+		self.useRobot = useRobot
 
 		super(TargetActivity, self).__init__()
 	#	uic.loadUi('design/activity_target.ui', self)
@@ -40,7 +38,7 @@ class TargetActivity(QtWidgets.QDialog):
 
 		# add tactile surface
 		self.tactileSurface = TactileSurfaceArea(self)
-		self.tactileSurface.setGeometry(QRect(0, Y_BEGINNING_TACTILE, self.frameGeometry().width(), self.frameGeometry().height()))
+		self.tactileSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
 		self.tactileSurface.show()
 
 		# suscribe to topics   PATH_TOPIC instead of TRAJ_TOPIC to use state machine
@@ -56,7 +54,7 @@ class TargetActivity(QtWidgets.QDialog):
 
 	def resizeEvent(self, event):
 		if self.tactileSurface != None:
-			self.tactileSurface.setGeometry(QRect(0, Y_BEGINNING_TACTILE, self.frameGeometry().width(), self.frameGeometry().height()))
+			self.tactileSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
 #		self.buttonErase.move(self.width() - self.buttonErase.width() - 10, self.buttonErase.y())
 	'''
 	def buttonEraseClicked(self):
@@ -72,7 +70,8 @@ class TargetActivity(QtWidgets.QDialog):
 		self.tactileSurface.addTarget()  
 		self.tactileSurface.target.updateWithParams(targetParams = self.targetParams)
 		self.targetParams.close()
-		self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
+		if self.useRobot == 'robot':
+			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 	def callback_targetPathCompleted(self):
 		if self.targetPath == None:
@@ -94,7 +93,7 @@ class TargetActivity(QtWidgets.QDialog):
 		if self.targetPath.previewTraj:
 			self.tactileSurface.drawPathLine(self.targetPath.path, self.targetPath.pathWidth)
 		self.tactileSurface.activeNaoHead = self.targetPath.playAgainstRobot
-		if not self.targetPath.traceWithRobot:
+		if not self.targetPath.traceWithRobot and self.useRobot == 'robot':
 			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 
@@ -119,7 +118,7 @@ class TargetActivity(QtWidgets.QDialog):
 		self.tactileSurface.drawPathBorders(upperPath, lowerPath)
 		self.tactileSurface.markPenTrajectory = True
 		self.tactileSurface.activeNaoHead = self.linePath.playAgainstRobot
-		if not self.linePath.traceWithRobot:
+		if not self.linePath.traceWithRobot and self.useRobot == 'robot':
 			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 
@@ -162,7 +161,10 @@ class TargetActivity(QtWidgets.QDialog):
 			self.callback_linePathCompleted()
 		elif not self.targetPath == None:
 			self.targetPath.path = path
-			self.callback_targetPathCompleted()
+			self.targetPath.width = 3000
+			self.targetPath.height = 2000
+			self.targetPath.choice_shape.setCurrentIndex(self.targetPath.choice_shape.findText('Custom'))
+	#		self.callback_targetPathCompleted()
 		else: return
 		
 
@@ -192,6 +194,9 @@ class TargetActivity(QtWidgets.QDialog):
 
 
 	def checkRobotAvailable(self, acceptedStates = [], requestState = None):
+		if self.useRobot != 'robot':
+			print('robot not used, please add robot argument to use robot')
+			return False
 		try:
 			nao_state = self.get_nao_state().state.data
 		except: 
@@ -212,17 +217,24 @@ class TargetActivity(QtWidgets.QDialog):
 			available = self.checkRobotAvailable(acceptedStates, requestState)
 		return available
 
-if __name__ == '__main__':
-    	# init node
-	rospy.init_node("target_activity")
 
+if __name__ == '__main__':
+
+	useRobot = ''
+	if len(sys.argv)>1:
+		print(sys.argv[1])
+		useRobot = sys.argv[1]
 
 	app = QtWidgets.QApplication(sys.argv)
-	window = TargetActivity()
+	window = TargetActivity(useRobot)
 	manager = Manager(window)
+	if useRobot == 'robot':
+		# init node
+		rospy.init_node("target_activity")
 	sys.exit(app.exec_())
+	if useRobot == 'robot':
+		rospy.spin()
 
-	rospy.spin()
 
 
 

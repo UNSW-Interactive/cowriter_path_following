@@ -9,8 +9,10 @@
     <arg name="nao_writing" default="True" />
     <arg name="path_db" default="/home/student/DB" />
 
+    <!--
     <node pkg="tf" type="static_transform_publisher" name="map_footprint_broadcaster" args="0 0 0 0 0 0 /map /base_footprint 10"/>
     <node pkg="tf" type="static_transform_publisher" name="writing_surface_broadcaster" args="0 0 0 0 0 0 /map /writing_surface 10"/>
+    -->
     <node pkg="cowriter_path_following" type="nao_writer.py" name="nao_writer" output="screen"/>
     <node pkg="cowriter_path_following" type="activity_nao.py" name="nao_activity" output="screen"/>
 

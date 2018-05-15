@@ -9,9 +9,8 @@ import rospy
 
 class ConnexionToNao():
     @staticmethod
-    def setConnexion(naoConnected, naoWriting, naoStanding, NAO_IP, PORT, LANGUAGE, effector):
+    def setConnexion(naoWriting, naoStanding, NAO_IP, PORT, LANGUAGE, effector):
         
-    #    if naoConnected:
         myBroker = ALBroker("myBroker", #I'm not sure that pyrobots doesn't already have one of these open called NAOqi?
                 "0.0.0.0",   # listen to anyone
                 0,           # find a free port and use it
@@ -24,10 +23,8 @@ class ConnexionToNao():
         textToSpeech.setLanguage(LANGUAGE.capitalize())
 
         ConnexionToNao.resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector)
-                
-        armJoints_standInit = motionProxy.getAngles(effector,True)
-                
-        return myBroker, postureProxy, motionProxy, textToSpeech, armJoints_standInit
+                                
+        return myBroker, postureProxy, motionProxy, textToSpeech 
 
     @staticmethod
     def resetPose(naoWriting, naoStanding, motionProxy, postureProxy, effector):
@@ -35,8 +32,6 @@ class ConnexionToNao():
         if naoWriting:
             if naoStanding:
                 motionProxy.wakeUp()
-         #       motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 1.0)
-        #        motionProxy.setStiffnesses(["LHipYawPitch", "LHipRoll", "LHipPitch", "RHipYawPitch", "RHipRoll", "RHipPitch"], 1.0)
                 motionProxy.wbEnableEffectorControl(effector, False) #turn whole body motion control on
                 postureProxy.goToPosture("Stand", 0.4)
                 motionProxy.setStiffnesses(["Head", "LArm", "RArm"], 1.0)

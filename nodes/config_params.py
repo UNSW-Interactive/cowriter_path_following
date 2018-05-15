@@ -3,10 +3,17 @@
 
 import rospy
 
+#constants
+PIX_TO_MM = 0.1534
+FRAME_TIME = 10.0
+ROBOT_DELAY = 5.0
+PEN_ERROR_MARGIN = 5.0
+NAO_HEAD_SIZE = 75
+TABLET_TO_ROBOT_DELAY = 0.7
+
+#default params
 DEFAULT_X = 100.0
 DEFAULT_Y = 100.0
-DEFAULT_CENTER_X = 400.0
-DEFAULT_CENTER_Y = 230.0
 DEFAULT_WIDTH = 100.0
 DEFAULT_HEIGHT = 100.0
 DEFAULT_PATH_SHAPE_WIDTH = 1200.0
@@ -21,30 +28,33 @@ DEFAULT_TILT_VELX = 70.0
 DEFAULT_TILT_VELY = 70.0
 DEFAULT_STEER_TILTX = False
 DEFAULT_STEER_TILTY = False
-#DEFAULT_MAX_SCORE = 10000
 DEFAULT_SPEED_FACTOR = 2.0
 DEFAULT_TIME = 10.0
-PIX_TO_MM = 0.1534
-FRAME_TIME = 10.0
-Y_BEGINNING_TACTILE = 0
 DEFAULT_ORDER = 10.0
 DEFAULT_SIN_PHASE = 0.0
 DEFAULT_TRACE_WITH_ROBOT = False
 DEFAULT_PLAY_AGAINST_ROBOT = False
 DEFAULT_NAO_SPEED_FACTOR = 5.0
-ROBOT_DELAY = 5.0
-PEN_ERROR_MARGIN = 5.0
-PATHS_SEPERATION = 0.7
-DEFAULT_TARGET_VISUAL_FORM = 'nao_head'
-NAO_HEAD_SIZE = 75
-TABLET_TO_ROBOT_DELAY = 0.7
 DEFAULT_MARK_PEN_TRAJ = True
 DEFAULT_PLAY_WITH_ROBOT = True
 DEFAULT_PREVIEW_TRAJ = True
 DEFAULT_TARGET_FOLLOWS_PEN = True
 DEFAULT_PATH_TYPE = 'Double line'
 
+# slider maximums
+MAX_TARGET_WIDTH = 400.0
+MAX_TARGET_HEIGHT = 400.0
+MAX_WIDTH = 3000.0
+MAX_HEIGHT = 2000.0
+MAX_ORDER = 60.0
+MAX_TIME = 200.0
+MAX_PATH_WIDTH = 400.0
+MAX_NAO_SPEED_FACTOR = 40.0
+MAX_PRESSURE_DIFFICULTY = 4.0
+MAX_DISTANCE_DIFFICULTY = 4.0
+MAX_TARGET_PRESSURE = 1.0
 
+# ROS topics
 TRAJ_TOPIC = "path_traj"
 READY_TOPIC = "robot_ready"
 PATH_TOPIC = "path_received"
@@ -59,32 +69,39 @@ EXPLAIN_GAME_TOPIC = "nao_explain_game"
 POSTURE_TOPIC = "robot_posture"
 INITIALIZATION_TOPIC = "robot_initialized"
 
-NAO_IP = rospy.get_param('/nao_ip','127.0.0.1')
-PORT = int(rospy.get_param('/nao_port','9559'))
-NAO_HANDEDNESS = rospy.get_param('/nao_handedness','right')
-if(NAO_HANDEDNESS.lower()=='right'):
-    effector   = "RArm"
-elif(NAO_HANDEDNESS.lower()=='left'):
-    effector = "LArm"
-else: 
-    rospy.logerr('error in handedness param')
-  
-naoWriting = rospy.get_param('/nao_writing',True) #whether or not the robot should move its arms
-naoConnected = rospy.get_param('/use_robot_in_interaction',True) #whether or not the robot is being used for the interaction (looking, etc.)
-naoWriting = naoWriting and naoConnected #use naoConnected var as the stronger property
-naoStanding = rospy.get_param('/nao_standing', True) #whether or not the robot should stand or rest on its knies 
-LANGUAGE = rospy.get_param('/language','french')
-PATH_DB = rospy.get_param('/path_db', "/home/student/DB")
-PATH_LETTERS_DB = rospy.get_param('/path_letters_db', "letters")
-SAVED_PATHS = rospy.get_param('/paths_saved', "saved_paths")
+# robot params
+try:
+    NAO_IP = rospy.get_param('/nao_ip','127.0.0.1')
+    PORT = int(rospy.get_param('/nao_port','9559'))
+    NAO_HANDEDNESS = rospy.get_param('/nao_handedness','right')
+    if(NAO_HANDEDNESS.lower()=='right'):
+        effector   = "RArm"
+    elif(NAO_HANDEDNESS.lower()=='left'):
+        effector = "LArm"
+    else: 
+        rospy.logerr('error in handedness param')
 
-PATH_FOLLOW_GAME = "path_follow_game"
-PATH_FOLLOW_GAME_VS = "PATH_FOLLOW_GAME_VS_EXPLANATION"
-TARGET_FOLLOW_GAME = "target_follow_game"
-TARGET_CONTROL_GAME = "target_control_game"
+    naoWriting = rospy.get_param('/nao_writing',True) #whether or not the robot should move its arms
+    naoStanding = rospy.get_param('/nao_standing', True) #whether or not the robot should stand or rest on its knies 
+    LANGUAGE = rospy.get_param('/language','french')
+    PATH_DB = rospy.get_param('/path_db', "/home/student/DB")
+    PATH_LETTERS_DB = rospy.get_param('/path_letters_db', "letters")
+    SAVED_PATHS = rospy.get_param('/paths_saved', "saved_paths")
 
-DIALOG_CHILD_PLAYING = "child_playing"
+    PATH_FOLLOW_GAME = "path_follow_game"
+    PATH_FOLLOW_GAME_VS = "PATH_FOLLOW_GAME_VS_EXPLANATION"
+    TARGET_FOLLOW_GAME = "target_follow_game"
+    TARGET_CONTROL_GAME = "target_control_game"
 
+    DIALOG_CHILD_PLAYING = "child_playing"
+
+except:  # if robot is not in use
+    LANGUAGE = 'french'
+    PATH_DB = "/home/nicolasm/DB"
+    PATH_LETTERS_DB = "letters"
+    SAVED_PATHS = "saved_paths"
+
+# robot phrases
 if LANGUAGE.lower() == 'french':
     CHILD_PLAYING_OPTION_A = "Trop fort!"
     CHILD_PLAYING_OPTION_B = "Bravo"

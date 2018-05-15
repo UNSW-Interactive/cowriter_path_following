@@ -4,11 +4,11 @@ from PyQt5.QtCore import QPoint, pyqtSignal, Qt, QTimer
 from nav_msgs.msg import Path
 import rospy
 import math
+from scipy import interpolate
+import numpy as np
 
 from Target import Target
 from config_params import *
-
-yBeginningTactile = 100.0
 
 class CustomPathSurface(QTableWidget):
 
@@ -23,7 +23,7 @@ class CustomPathSurface(QTableWidget):
 		self.pixmap = None
 		self.pixmapHandwriting = None
 		self.deviceDown = False
-		self.timer = QTimer()
+	#	self.timer = QTimer()
 
 		self.path = []
 		self.lastPoints = [QPoint(), QPoint()]
@@ -47,7 +47,22 @@ class CustomPathSurface(QTableWidget):
 
 	def acceptPath(self):
 		self.close()
+		self.path = self.densifyPath(self.path)
 		self.parent.customPathReady(self.path)
+
+	def densifyPath(self, path):
+		if len(path)<1:
+			return []
+		x = [path[i][0] for i in range(len(path))]
+		y = [path[i][1] for i in range(len(path))]
+		function = interpolate.interp1d(range(len(x)), [x,y])
+		frames = 1000.0 * self.parent.targetPath.time / FRAME_TIME
+		coef = (float(len(x)-1.0))/frames
+		f = function([coef*i for i in range(int(frames))]) #interpolate.splev(newX, tck, der=0)
+		newX = f[0]
+		newY = f[1]
+		path = [[i,j] for i,j in zip(newX,newY)]
+		return path
 
 	def cancelPath(self):
 #		self.erasePixmap()
@@ -92,7 +107,12 @@ class CustomPathSurface(QTableWidget):
 				self.updateBrush(event)
 				painter = QPainter(self.pixmapHandwriting)
 				self.paintPixmap(painter, event)
-				self.path.append([event.posF().x(), event.posF().y() - yBeginningTactile])
+				x = event.posF().x()
+				y =  event.posF().y()
+				if len(self.path) > 0:
+					if abs(self.path[-1][0] - x) + abs(self.path[-1][1] - y) > 100:
+						return
+				self.path.append([x,y])
 		
 	def updateBrush(self, event):
 		#hue, saturation, value, alpha;
@@ -117,6 +137,7 @@ class CustomPathSurface(QTableWidget):
 		painter.setBrush(self.myBrush)
 		painter.setPen(self.myPen)
 		painter.drawLine(self.lastPoints[1], event.pos())
+		painter.end()
 		self.viewport().update()
 	
 

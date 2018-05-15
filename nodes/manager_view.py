@@ -25,7 +25,6 @@ class Manager(QtWidgets.QDialog):
 		my_path = os.path.abspath(os.path.dirname(__file__))
 		path = os.path.join(my_path, '../design/manager_view.ui')
 		uic.loadUi(path, self)
-#		self.grabKeyboard()
 		
 		self.show()
 		self.activity = activity_w
@@ -37,6 +36,7 @@ class Manager(QtWidgets.QDialog):
 		self.widgetNao.hide()
 		self.buttonSave.hide()
 
+		# connect all buttons
 		self.buttonErase.clicked.connect(self.buttonEraseClicked)
 		self.buttonRestart.clicked.connect(self.buttonRestartClicked)
 		self.buttonTargetParams.clicked.connect(self.buttonTargetParamsClicked)
@@ -45,25 +45,35 @@ class Manager(QtWidgets.QDialog):
 		self.buttonProfile.clicked.connect(self.buttonProfileClicked)
 		self.buttonPathDialog.clicked.connect(self.buttonPathDialogClicked)
 		self.buttonSave.clicked.connect(self.buttonSaveClicked)
-		self.buttonRobotOptions.clicked.connect(self.buttonRobotOptionsClicked)
+
+		self.buttonTargetParams.hide()
+		self.buttonLinePath.hide()
+
+		if self.activity.useRobot == 'robot':
+			self.buttonRobotOptions.clicked.connect(self.buttonRobotOptionsClicked)
+			self.buttonUnexpectedFail.clicked.connect(self.buttonUnexpectedFailClicked)
+			self.buttonNaoSit.clicked.connect(self.buttonNaoSitClicked)
+			self.buttonNaoStand.clicked.connect(self.buttonNaoStandClicked)
+			self.buttonOptionA.clicked.connect(self.buttonOptionAClicked)
+			self.buttonOptionB.clicked.connect(self.buttonOptionBClicked)
+			self.buttonOptionC.clicked.connect(self.buttonOptionCClicked)
+			self.buttonOptionD.clicked.connect(self.buttonOptionDClicked)
+		else:    # hide robot options if robot not used
+			self.buttonRobotOptions.hide()
 
 		self.pathText.setText(PATH_DB)
 
-		self.buttonUnexpectedFail.clicked.connect(self.buttonUnexpectedFailClicked)
-		self.buttonNaoSit.clicked.connect(self.buttonNaoSitClicked)
-		self.buttonNaoStand.clicked.connect(self.buttonNaoStandClicked)
-		self.buttonOptionA.clicked.connect(self.buttonOptionAClicked)
-		self.buttonOptionB.clicked.connect(self.buttonOptionBClicked)
-		self.buttonOptionC.clicked.connect(self.buttonOptionCClicked)
-		self.buttonOptionD.clicked.connect(self.buttonOptionDClicked)
-
+		#Add publisher and subscribers
 		self.publish_fail = rospy.Publisher(FAIL_TOPIC, Empty, queue_size=10)
 		self.publish_dialogOption = rospy.Publisher(DIALOG_OPTION_TOPIC, String, queue_size=10)
 		self.publish_explainGame = rospy.Publisher(EXPLAIN_GAME_TOPIC, String, queue_size=10)
 		self.publish_posture = rospy.Publisher(POSTURE_TOPIC, String, queue_size=10)
 		subscriber_dialog = rospy.Subscriber(DIALOG_TOPIC, String, self.addDialogOptions)
 
+		# grab keyboard events from tactile surface
 		self.activity.tactileSurface.signalKeyBoardPress.connect(self.keyPressEvent)
+
+
 
 	def buttonProfileClicked(self):
 		self.childProfile = ChildProfile(self)
@@ -80,6 +90,7 @@ class Manager(QtWidgets.QDialog):
 		self.pathWriter = self.pathText.text() + "/" + self.childProfile.lastName + "_" + self.childProfile.firstName + date
 
 	def buttonSaveClicked(self):
+
 		if self.activity.tactileSurface.target == None or len(self.activity.tactileSurface.data) < 1:
 			return
 
@@ -100,15 +111,14 @@ class Manager(QtWidgets.QDialog):
 					file.write("\ntestDate: " + str(datetime.now()))
 
 					file.close()
-
 			else:
 				print("DB path doesn't exists, change it in with rosparam path_db")
 			
-			pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + ".csv"
+			pathDrawing = self.pathWriter + "/drawing_0.csv"
 
 			if os.path.isfile(pathDrawing):
-				pathDrawing = self.pathWriter + "/" + self.activity.tactileSurface.target.behavior + "_" + str(self.nbSameDrawing) + ".csv"
 				self.nbSameDrawing += 1
+				pathDrawing = self.pathWriter + "/drawing_" + str(self.nbSameDrawing) + ".csv"
 
 			file = open(pathDrawing, "w")
 			file.write(self.activity.tactileSurface.target.info + '\n')
@@ -129,7 +139,7 @@ class Manager(QtWidgets.QDialog):
 				file.write(str("\n"))
 
 			file.close()
-			
+		
 		except: print('save failed')
 	
 

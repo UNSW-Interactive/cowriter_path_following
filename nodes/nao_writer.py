@@ -65,6 +65,7 @@ def on_traj(traj):
     else:
         rospy.loginfo("Got traj but not allowed to execute it because I've fallen")
 
+
 def scaleAndFlipPoints(matrix):
 
     # windows where the robot can move its arms
@@ -94,6 +95,7 @@ def scaleAndFlipPoints(matrix):
 
     return points
 
+#reinitialize robot variables related to posture
 def on_robotInit(initPosture):
     global hasFallen, posRefRobot
     hasFallen = False;
@@ -102,6 +104,7 @@ def on_robotInit(initPosture):
         posRefRobot = 0.3
     else:
         posRefRobot = 0.2
+
 
 class FallResponder(ALModule):
   """ Module to react to robotHasFallen events """
@@ -137,9 +140,10 @@ if __name__ == "__main__":
     motionProxy = ALProxy("ALMotion", NAO_IP, PORT);
     memoryProxy = ALProxy("ALMemory", NAO_IP, PORT);
     postureProxy = ALProxy("ALRobotPosture", NAO_IP, PORT)
-    trackerProxy = ALProxy("ALTracker", NAO_IP, PORT)
+    #trackerProxy = ALProxy("ALTracker", NAO_IP, PORT)
 
     fallResponder = FallResponder("fallResponder",motionProxy,memoryProxy);
+
 
     sub_traj = rospy.Subscriber(TRAJ_TOPIC, Path, on_traj)
     sub_robotInitialized = rospy.Subscriber(INITIALIZATION_TOPIC, String, on_robotInit)

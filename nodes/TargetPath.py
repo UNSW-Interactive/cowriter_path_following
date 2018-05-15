@@ -29,7 +29,6 @@ class TargetPath(QtWidgets.QDialog):
 		self.speedFactor = DEFAULT_SPEED_FACTOR
 		self.targetWidth = DEFAULT_WIDTH
 		self.targetHeight = DEFAULT_HEIGHT
-		self.visualForm = DEFAULT_TARGET_VISUAL_FORM
 		self.markPenTraj = DEFAULT_MARK_PEN_TRAJ
 		self.previewTraj = DEFAULT_PREVIEW_TRAJ
 		self.pathWidth = DEFAULT_PATH_WIDTH
@@ -40,6 +39,7 @@ class TargetPath(QtWidgets.QDialog):
 		self.pathType = DEFAULT_PATH_TYPE
 		self.pressureTargetList = []
 		self.shapeIndex = 0
+		self.visualFormIndex = 0
 
 
 		super(TargetPath, self).__init__(parent)
@@ -61,7 +61,8 @@ class TargetPath(QtWidgets.QDialog):
 		self.buttonLoad.clicked.connect(self.buttonLoadClicked)
 		self.buttonSave.clicked.connect(self.buttonSaveClicked)
 
-
+		self.widgetTrash.hide()
+		
 		self.choice_shape.addItem("Random Spline")
 		self.choice_shape.addItem("Ellipse")
 		self.choice_shape.addItem("Sinusoid")
@@ -69,6 +70,7 @@ class TargetPath(QtWidgets.QDialog):
 		self.choice_shape.addItem("Vertical Line")
 		self.choice_shape.addItem("Horizontal Line")
 		self.choice_shape.addItem("Letter")
+		self.choice_shape.addItem("Custom")
 
 		self.choice_visualForm.addItem("red_dot")
 		self.choice_visualForm.addItem("nao_head")
@@ -77,6 +79,44 @@ class TargetPath(QtWidgets.QDialog):
 
 		self.choice_pathType.addItem("Double line")
 		self.choice_pathType.addItem("Single line")
+
+	# connect all sliders and text edits
+
+		self.e_targetPressure.textChanged.connect(self.targetPressureChanged)
+		self.sliderTargetPressure.valueChanged.connect(self.targetPressureSliderChanged)
+
+		self.e_pressureDifficulty.textChanged.connect(self.pressureDifficultyChanged)
+		self.sliderPressureDifficulty.valueChanged.connect(self.pressureDifficultySliderChanged)
+
+		self.e_distanceDifficulty.textChanged.connect(self.distanceDifficultyChanged)
+		self.sliderDistanceDifficulty.valueChanged.connect(self.distanceDifficultySliderChanged)
+
+		self.e_naoSpeedFactor.textChanged.connect(self.targetNaoSpeedChanged)
+		self.sliderNaoSpeedFactor.valueChanged.connect(self.targetNaoSpeedSliderChanged)
+
+		self.e_targetWidth.textChanged.connect(self.targetWidthChanged)
+		self.sliderTargetWidth.valueChanged.connect(self.targetWidthSliderChanged)
+		
+		self.e_targetHeight.textChanged.connect(self.targetHeightChanged)
+		self.sliderTargetHeight.valueChanged.connect(self.targetHeightSliderChanged)
+
+		self.e_width.textChanged.connect(self.widthChanged)
+		self.sliderWidth.valueChanged.connect(self.widthSliderChanged)
+
+		self.e_height.textChanged.connect(self.heightChanged)
+		self.sliderHeight.valueChanged.connect(self.heightSliderChanged)
+
+		self.e_pathWidth.textChanged.connect(self.pathWidthChanged)
+		self.sliderPathWidth.valueChanged.connect(self.pathWidthSliderChanged)
+
+		self.e_order.textChanged.connect(self.orderChanged)
+		self.sliderOrder.valueChanged.connect(self.orderSliderChanged)
+
+		self.e_time.textChanged.connect(self.timeChanged)
+		self.sliderTime.valueChanged.connect(self.timeSliderChanged)
+
+
+
 
 		self.show()
 
@@ -127,6 +167,8 @@ class TargetPath(QtWidgets.QDialog):
 		except: pass
 		try: self.shapeIndex = self.choice_shape.currentIndex()
 		except: pass
+		try: self.visualFormIndex = self.choice_visualForm.currentIndex()
+		except: pass
 
 		self.updatePath()
 
@@ -158,18 +200,21 @@ class TargetPath(QtWidgets.QDialog):
 		elif self.shape == "Letter":
 			self.path, self.pressureTargetList = PathGenerator.generateFromDB(self.pathText.text(), self.centerX,
 			 self.centerY, self.width, self.height, self.time / FRAME_TIME, self.speedFactor)
+		elif self.shape == "Custom":
+			self.width = 3000
+			self.height = 2000
 		else:
 			self.path = []
 		
 
 	def createCustomPath(self):
-		self.updatePathParams()
+	#	self.updatePathParams()
 		self.signal_createCustomPath.emit()
-		self.close()
+	#	self.close()
 
 	def resetDefaultParams(self):
-		self.e_centerX.setText(str(DEFAULT_CENTER_X))
-		self.e_centerY.setText(str(DEFAULT_CENTER_Y))
+		self.centerX = self.parent.activity.frameGeometry().width() /2
+		self.centerY = self.parent.activity.frameGeometry().height() /2
 		self.e_width.setText(str(DEFAULT_PATH_SHAPE_WIDTH))
 		self.e_height.setText(str(DEFAULT_PATH_SHAPE_HEIGHT))
 		self.e_order.setText(str(DEFAULT_ORDER))
@@ -186,7 +231,9 @@ class TargetPath(QtWidgets.QDialog):
 		self.c_traceWithRobot.setChecked(DEFAULT_TRACE_WITH_ROBOT)
 		self.c_playAgainstRobot.setChecked(DEFAULT_PLAY_AGAINST_ROBOT)
 		self.e_naoSpeedFactor.setText(str(DEFAULT_NAO_SPEED_FACTOR))
-		self.c_targetFollowsPen.setText(str(DEFAULT_TARGET_FOLLOWS_PEN))
+		self.c_targetFollowsPen.setChecked(DEFAULT_TARGET_FOLLOWS_PEN)
+		self.choice_shape.setCurrentIndex(0)
+		self.choice_visualForm.setCurrentIndex(0)
 
 	def autoFillOldParams(self, other=None):
 		if other == None:
@@ -211,22 +258,24 @@ class TargetPath(QtWidgets.QDialog):
 		self.e_naoSpeedFactor.setText(str(other.naoSpeedFactor))
 		self.c_targetFollowsPen.setChecked(other.followPen)
 		self.choice_shape.setCurrentIndex(other.shapeIndex)
+		self.choice_visualForm.setCurrentIndex(other.visualFormIndex)
 
 	def naoExplainGame(self):
 		if self.c_targetFollowsPen.isChecked():
 			if self.c_playAgainstRobot.isChecked():
-				self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
+				if self.parent.activity.useRobot == 'robot':
+					self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
 				self.textGameDescription.setText(PATH_FOLLOW_VS_EXPLANATION)
 			else:
-				self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
+				if self.parent.activity.useRobot == 'robot':
+					self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
 				self.textGameDescription.setText(PATH_FOLLOW_GAME_EXPLANATION)
 		else:
-			self.parent.publish_explainGame.publish(TARGET_FOLLOW_GAME)
+			if self.parent.activity.useRobot == 'robot':
+				self.parent.publish_explainGame.publish(TARGET_FOLLOW_GAME)
 			self.textGameDescription.setText(TARGET_FOLLOW_GAME_EXPLANATION)
 
 	
-
-
 
 	def buttonPathDialogClicked(self):
 		input_dir = QFileDialog.getOpenFileName(None, 'Select a file:', self.pathText.text())[0]
@@ -261,6 +310,8 @@ class TargetPath(QtWidgets.QDialog):
 				self.naoSpeedFactor = variables[17]
 				self.followPen = variables[18]
 				self.shapeIndex = variables[19]
+				self.visualFormIndex = variables[20]
+				self.path = variables[21]
 				self.autoFillOldParams()
 		except:
 			print('Could not load file')
@@ -292,6 +343,142 @@ class TargetPath(QtWidgets.QDialog):
 				variables.append(self.naoSpeedFactor)
 				variables.append(self.followPen)
 				variables.append(self.shapeIndex)
+				variables.append(self.visualFormIndex)
+				variables.append(self.path)
 				pickle.dump(variables, fp)
 		except:
 			print('Could not save file')
+
+# slider and text edit changed callbacks
+
+	def targetPressureChanged(self):
+		try:
+			self.pressure_target = float(self.e_targetPressure.toPlainText())
+			self.sliderTargetPressure.setValue(self.pressure_target*(100/MAX_TARGET_PRESSURE))
+		except: pass
+
+	def targetPressureSliderChanged(self):
+		try:
+			self.pressure_target = float(self.sliderTargetPressure.value()/(100/MAX_TARGET_PRESSURE))
+			self.e_targetPressure.setText(str(self.pressure_target))
+		except: pass
+
+	def pressureDifficultyChanged(self):
+		try:
+			self.pressure_difficulty = float(self.e_pressureDifficulty.toPlainText())
+			self.sliderPressureDifficulty.setValue(self.pressure_difficulty*(100/MAX_PRESSURE_DIFFICULTY))
+		except: pass
+
+	def pressureDifficultySliderChanged(self):
+		try:
+			self.pressure_difficulty = float(self.sliderPressureDifficulty.value()/(100/MAX_PRESSURE_DIFFICULTY))
+			self.e_pressureDifficulty.setText(str(self.pressure_difficulty))
+		except: pass
+
+	def distanceDifficultyChanged(self):
+		try:
+			self.distance_difficulty = float(self.e_distanceDifficulty.toPlainText())
+			self.sliderDistanceDifficulty.setValue(self.distance_difficulty*(100/MAX_DISTANCE_DIFFICULTY))
+		except: pass
+
+	def distanceDifficultySliderChanged(self):
+		try:
+			self.distance_difficulty = float(self.sliderDistanceDifficulty.value()/(100/MAX_DISTANCE_DIFFICULTY))
+			self.e_distanceDifficulty.setText(str(self.distance_difficulty))
+		except: pass
+
+	def targetNaoSpeedChanged(self):
+		try:
+			self.naoSpeedFactor = float(self.e_naoSpeedFactor.toPlainText())
+			self.sliderNaoSpeedFactor.setValue(self.naoSpeedFactor*(100/MAX_NAO_SPEED_FACTOR))
+		except: pass
+
+	def targetNaoSpeedSliderChanged(self):
+		try:
+			self.naoSpeedFactor = float(self.sliderNaoSpeedFactor.value()/(100/MAX_NAO_SPEED_FACTOR))
+			self.e_naoSpeedFactor.setText(str(self.naoSpeedFactor))
+		except: pass
+
+	def targetHeightChanged(self):
+		try:
+			self.targetHeight = float(self.e_targetHeight.toPlainText())
+			self.sliderTargetHeight.setValue(self.targetHeight*(100/MAX_TARGET_HEIGHT))
+		except: pass
+
+	def targetHeightSliderChanged(self):
+		try:
+			self.targetHeight = float(self.sliderTargetHeight.value()/(100/MAX_TARGET_HEIGHT))
+			self.e_targetHeight.setText(str(self.targetHeight))
+		except: pass
+
+	def targetWidthChanged(self):
+		try:
+			self.targetWidth = float(self.e_targetWidth.toPlainText())
+			self.sliderTargetWidth.setValue(self.targetWidth*(100/MAX_TARGET_WIDTH))
+		except: pass
+
+	def targetWidthSliderChanged(self):
+		try:
+			self.targetWidth = float(self.sliderTargetWidth.value()/(100/MAX_TARGET_WIDTH))
+			self.e_targetWidth.setText(str(self.targetWidth))
+		except: pass
+
+	def heightChanged(self):
+		try:
+			self.height = float(self.e_height.toPlainText())
+			self.sliderHeight.setValue(self.height*(100/MAX_HEIGHT))
+		except: pass
+
+	def heightSliderChanged(self):
+		try:
+			self.height = float(self.sliderHeight.value()/(100/MAX_HEIGHT))
+			self.e_height.setText(str(self.height))
+		except: pass
+
+	def widthChanged(self):
+		try:
+			self.width = float(self.e_width.toPlainText())
+			self.sliderWidth.setValue(self.width*(100/MAX_WIDTH))
+		except: pass
+
+	def widthSliderChanged(self):
+		try:
+			self.width = float(self.sliderWidth.value()/(100/MAX_WIDTH))
+			self.e_width.setText(str(self.width))
+		except: pass
+
+	def pathWidthChanged(self):
+		try:
+			self.pathWidth = float(self.e_pathWidth.toPlainText())
+			self.sliderPathWidth.setValue(self.pathWidth*(100/MAX_PATH_WIDTH))
+		except: pass
+
+	def pathWidthSliderChanged(self):
+		try:
+			self.pathWidth = float(self.sliderPathWidth.value()/(100/MAX_PATH_WIDTH))
+			self.e_pathWidth.setText(str(self.pathWidth))
+		except: pass
+
+	def orderChanged(self):
+		try:
+			self.order = float(self.e_order.toPlainText())
+			self.sliderOrder.setValue(self.order*(100/MAX_ORDER))
+		except: pass
+
+	def orderSliderChanged(self):
+		try:
+			self.order = float(self.sliderOrder.value()/(100/MAX_ORDER))
+			self.e_order.setText(str(self.order))
+		except: pass
+
+	def timeChanged(self):
+		try:
+			self.time = float(self.e_time.toPlainText())
+			self.sliderTime.setValue(self.time*(100/MAX_TIME))
+		except: pass
+
+	def timeSliderChanged(self):
+		try:
+			self.time = float(self.sliderTime.value()/(100/MAX_TIME))
+			self.e_time.setText(str(self.time))
+		except: pass

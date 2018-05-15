@@ -138,11 +138,13 @@ class LinePath(QtWidgets.QDialog):
 
 	def naoExplainGame(self):
 		if self.c_playAgainstRobot.isChecked():
-			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
+			if self.parent.activity.useRobot == 'robot':
+				self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME_VS)
 			self.textGameDescription.setText(PATH_FOLLOW_VS_EXPLANATION)
 
 		else:
-			self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
+			if self.parent.activity.useRobot == 'robot':
+				self.parent.publish_explainGame.publish(PATH_FOLLOW_GAME)
 			self.textGameDescription.setText(PATH_FOLLOW_GAME_EXPLANATION)
 
 

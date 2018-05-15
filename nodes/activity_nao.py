@@ -14,7 +14,7 @@ from std_msgs.msg import String, Empty, Float32
 from naoqi import ALProxy
 
 
-
+# Check if the robot is moving
 def isMoving():
     for task in motionProxy.getTaskList():
         if task[0] == 'angleInterpolationBezier':
@@ -31,6 +31,8 @@ def onPathFinished(message):
 pathReceived = None
 def onPathReceived(path):
     global pathReceived 
+
+    # check if the robot is an state that can accept the new path
     if(stateMachine.get_state() == "WAITING_FOR_PATH"
             or stateMachine.get_state() == "STARTING_INTERACTION"
             or stateMachine.get_state() == "IDLE"
@@ -53,12 +55,14 @@ def onStateRequestReceived(state):
     requestedState = state.data
     rospy.loginfo("requested state: " + state.data)
 
+    # Set all other state changing variable to none
     global scoreReceived
     global pathReceived 
     global pathFinished
     scoreReceived = None
     pathReceived = None
     pathFinished = None
+
 
 naoPosture = None
 def onPostureRequest(requestedPosture):
@@ -67,7 +71,10 @@ def onPostureRequest(requestedPosture):
     if requestedPosture.data != naoPosture:
         naoPosture = requestedPosture.data
         ConnexionToNao.resetPose(naoWriting, naoPosture == 'stand', motionProxy, postureProxy, effector)
+        
+        #reinitialize robot variables related to posture
         publish_init.publish(naoPosture)
+
 
 def onDialogOptionsReceived(option):
     if(stateMachine.get_state() == "ASKING_PLAY_GAME" 
@@ -97,21 +104,24 @@ def onGameExplainRequest(gameName):
 def startInteraction(infoFromPrevState):
     rospy.loginfo("STATE: STARTING_INTERACTION")
     pub_state_activity.publish("STARTING_INTERACTION")
-            
+
+    #initialize posture and proxies
     global naoPosture
     if naoPosture == None:
         if naoStanding: naoPosture = 'stand'
         else: naoPosture = 'sit'
     global myBroker, postureProxy, motionProxy, textToSpeech, armJoints_standInit 
-    myBroker, postureProxy, motionProxy, textToSpeech, armJoints_standInit = ConnexionToNao.setConnexion(naoConnected, naoWriting, naoPosture == 'stand', NAO_IP, PORT, LANGUAGE, effector)
+    myBroker, postureProxy, motionProxy, textToSpeech = ConnexionToNao.setConnexion(naoWriting, naoPosture == 'stand', NAO_IP, PORT, LANGUAGE, effector)
     publish_init.publish(naoPosture)
 
     nextState = "IDLE"
     infoForNextState = {'state_cameFrom': "STARTING_INTERACTION"}
         
     return nextState, infoForNextState
-   
+
+
 def waitForPath(infoFromPrevState):
+    #first time into this state preparations
     if infoFromPrevState['state_cameFrom'] != "WAITING_FOR_PATH":
         rospy.loginfo("STATE: WAITING_FOR_PATH")
         pub_state_activity.publish("WAITING_FOR_PATH")
@@ -119,6 +129,7 @@ def waitForPath(infoFromPrevState):
     global pathReceived
     global requestedState
 
+    # check if path is received or a state is requested
     infoForNextState = {'state_cameFrom': "WAITING_FOR_PATH"}
     if pathReceived is None:
         if requestedState is None:
@@ -131,6 +142,7 @@ def waitForPath(infoFromPrevState):
 
     return nextState, infoForNextState
 
+
 def respondToNewPath(infoFromPrevState):
     rospy.loginfo("STATE: RESPONDING_TO_NEW_PATH")
     pub_state_activity.publish("RESPONDING_TO_NEW_PATH")
@@ -139,12 +151,14 @@ def respondToNewPath(infoFromPrevState):
     traj = pathReceived
     pathReceived = None
 
-    pub_clear.publish(Empty())
-    rospy.sleep(0.5)
+    #pub_clear.publish(Empty())
+    #rospy.sleep(0.5)
 
+    # robot for robot to stop moving
     while isMoving():
         rospy.sleep(0.1)
 
+    # send trajectory to nao_writer node
     publish_traj.publish(traj)
 
     nextState = 'WAITING_FOR_PATH_TO_FINISH'
@@ -152,7 +166,6 @@ def respondToNewPath(infoFromPrevState):
     return nextState, infoForNextState
     
 def waitForPathToFinish(infoFromPrevState):
-
     #first time into this state preparations
     if infoFromPrevState['state_cameFrom'] != "WAITING_FOR_PATH_TO_FINISH":
         rospy.loginfo("STATE: WAITING_FOR_PATH_TO_FINISH")
@@ -165,7 +178,7 @@ def waitForPathToFinish(infoFromPrevState):
     global pathFinished
     if pathFinished:
         ConnexionToNao.resetPose(naoWriting, naoPosture == 'stand', motionProxy, postureProxy, effector)
-        nextState = 'ASKING_PLAY_GAME'
+        nextState = 'WAITING_FOR_GAME_TO_FINISH'
         pathFinished = False
     else:
         nextState = 'WAITING_FOR_PATH_TO_FINISH'
@@ -173,27 +186,27 @@ def waitForPathToFinish(infoFromPrevState):
     return nextState, infoForNextState
 
 
-def askToPlayGame(infoFromPrevState):
-    global scoreReceived
+#def askToPlayGame(infoFromPrevState):
+#    rospy.loginfo("STATE: ASKING_PLAY_GAME")
+#    pub_state_activity.publish("ASKING_PLAY_GAME")
+#   
+#    infoForNextState = {'state_cameFrom': "ASKING_PLAY_GAME"}
+#    
+#    nextState = "WAITING_FOR_GAME_TO_FINISH"
+#    
+#    return nextState, infoForNextState
 
-    rospy.loginfo("STATE: ASKING_PLAY_GAME")
-    pub_state_activity.publish("ASKING_PLAY_GAME")
-   
-    infoForNextState = {'state_cameFrom': "ASKING_PLAY_GAME"}
-    
-    nextState = "WAITING_FOR_GAME_TO_FINISH"
-    
-    return nextState, infoForNextState
 
+# state to wait for the child to finish drawing
 def waitForGameToFinish(infoFromPrevState):
     if infoFromPrevState['state_cameFrom'] != "WAITING_FOR_GAME_TO_FINISH":
         rospy.loginfo("STATE: WAITING_FOR_GAME_TO_FINISH")
         pub_state_activity.publish("WAITING_FOR_GAME_TO_FINISH")
 
-#    global changeActivityReceived
     global scoreReceived
     global requestedState
 
+    # update dialog options
     publish_dialog.publish(DIALOG_CHILD_PLAYING)
     
     infoForNextState = {'state_cameFrom': "WAITING_FOR_GAME_TO_FINISH"}
@@ -209,6 +222,7 @@ def waitForGameToFinish(infoFromPrevState):
       
     return nextState, infoForNextState    
 
+
 def respondToChildScore(infoFromPrevState):
     rospy.loginfo("STATE: RESPONDING_TO_CHILD_SCORE")
     pub_state_activity.publish("RESPONDING_TO_CHILD_SCORE")
@@ -217,12 +231,10 @@ def respondToChildScore(infoFromPrevState):
     #Do something with received score
 
     scoreReceived = None
-    #clear screen
-#    pub_clear.publish(Empty())
-#    rospy.sleep(0.5)
 
     nextState = 'IDLE'
     infoForNextState = {'state_cameFrom': "RESPONDING_TO_CHILD_SCORE"}
+
 
 def onRobotFailed(infoFromPrevState):
     rospy.loginfo("STATE: FAIL")
@@ -235,6 +247,8 @@ def onRobotFailed(infoFromPrevState):
 
     return nextState, infoForNextState
 
+
+# The robot is just waiting for new state request
 def onIdle(infoFromPrevState):
     if infoFromPrevState['state_cameFrom'] != "IDLE":
         rospy.loginfo("STATE: IDLE")
@@ -257,13 +271,13 @@ if __name__ == "__main__":
 
     rospy.init_node("activity_nao")
     
-  
+    # add all state to state machine
     stateMachine = StateMachine()
     stateMachine.add_state("STARTING_INTERACTION", startInteraction)
     stateMachine.add_state("WAITING_FOR_PATH", waitForPath)
     stateMachine.add_state("RESPONDING_TO_NEW_PATH", respondToNewPath)
     stateMachine.add_state("WAITING_FOR_PATH_TO_FINISH", waitForPathToFinish)
-    stateMachine.add_state("ASKING_PLAY_GAME", askToPlayGame)
+    #stateMachine.add_state("ASKING_PLAY_GAME", askToPlayGame)
     stateMachine.add_state("WAITING_FOR_GAME_TO_FINISH", waitForGameToFinish)
     stateMachine.add_state("RESPONDING_TO_CHILD_SCORE", respondToChildScore)
     stateMachine.add_state("IDLE", onIdle)
@@ -295,7 +309,7 @@ if __name__ == "__main__":
     publish_dialog = rospy.Publisher(DIALOG_TOPIC, String, queue_size=10)
     publish_init = rospy.Publisher(INITIALIZATION_TOPIC, String, queue_size=10)
 
-    rospy.sleep(2.0)  #Allow some time for the subscribers to do their thing, 
+    rospy.sleep(2.0)  #Allow some time for the subscribers to do their thing
 
     stateMachine.run(infoForStartState)   
     rospy.spin()
