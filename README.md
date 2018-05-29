@@ -84,3 +84,5 @@ Special Options:
 ![](random3.png)
 
 -Custom: Lets you draw any arbitrary shape and transforms it into a path.
+![](custom_1.jpg)
+![](custom_2.jpg)
