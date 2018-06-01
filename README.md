@@ -36,12 +36,12 @@ Tablet Tactile Surface
 ------
 The white canvas for the child to draw on.
 
-![](Canvas.png)
+![](Images/Canvas.png)
 
 
 Manager view
 ------
-![](manager_view.png) 
+![](Images/manager_view.png) 
 
 
 Allows you to control the activity and set the parameters. It is open on a separate window so that it can be used on a different screen. This interface presents all the necessary options for creating the path and controlling the robot's actions. 
@@ -62,7 +62,7 @@ The lower part contains all the robot control buttons (this part is hidden if th
 
 Path Parameters Window
 ------
-![](path_params.png)
+![](Images/path_params.png)
 
 Opens from the Manager View by pressing the Path Button. Lets you specify all the parameters of the activity. It is divided into 3 main sections.
 - Path Options: this section contains all the parameters related to the path itself. The function order is the name given the path creation parameter that controls the number of loops in a spiral for example. The time parameter indicates the time it takes for both the target to go threw the pass (if the child has to follow the target) and for the robot to trace the path. The rest of the parameters are self explanatory.
@@ -75,14 +75,14 @@ Path Shapes
 The path shape is the first path parameter to set, it defines the global shape of the path.
 
 Basic options: Ellipse, spiral, sinusoid, vertical line, horizontal line.
-![](spiral.png)
-![](sinusoid.png)
+![](Images/spiral.png)
+![](Images/sinusoid.png)
 Special Options:
 - Random Spline: draws a randomly generated smooth path (smoothness depending on the function order).
-![](random1.png)
-![](random2.png)
-![](random3.png)
+![](Images/random1.png)
+![](Images/random2.png)
+![](Images/random3.png)
 
 -Custom: Lets you draw any arbitrary shape and transforms it into a path.
-![](custom_1.jpg)
-![](custom_2.jpg)
+![](Images/custom_1.jpg)
+![](Images/custom_2.jpg)
