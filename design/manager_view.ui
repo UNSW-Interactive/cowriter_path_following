@@ -39,40 +39,6 @@
     </size>
    </property>
   </widget>
-  <widget class="QPushButton" name="buttonLinePath">
-   <property name="geometry">
-    <rect>
-     <x>320</x>
-     <y>40</y>
-     <width>81</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Open the menu for creating a path that the user has to follow 
- (in this activity the tablet detects when the pen is outside the path 
- and the trace of the pen becomes red)</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>line_path.png</normaloff>line_path.png</iconset>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>75</width>
-     <height>75</height>
-    </size>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
   <widget class="QPushButton" name="buttonRestart">
    <property name="geometry">
     <rect>
@@ -87,38 +53,6 @@
    </property>
    <property name="text">
     <string>RESTART</string>
-   </property>
-   <property name="iconSize">
-    <size>
-     <width>75</width>
-     <height>75</height>
-    </size>
-   </property>
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>false</bool>
-   </property>
-  </widget>
-  <widget class="QPushButton" name="buttonTargetParams">
-   <property name="geometry">
-    <rect>
-     <x>220</x>
-     <y>40</y>
-     <width>81</width>
-     <height>81</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>Open the menu for creating a target that the user can control with pen tilt</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-   <property name="icon">
-    <iconset>
-     <normaloff>target.png</normaloff>target.png</iconset>
    </property>
    <property name="iconSize">
     <size>

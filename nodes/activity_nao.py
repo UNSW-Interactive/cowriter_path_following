@@ -46,7 +46,6 @@ scoreReceived = None
 def onScoreReceived(score):
     global scoreReceived 
     scoreReceived = score
-#    nextState = "RESPONDING_TO_NEW_PATH"
 
 requestedState = None
 def onStateRequestReceived(state):
@@ -150,9 +149,6 @@ def respondToNewPath(infoFromPrevState):
     global pathReceived
     traj = pathReceived
     pathReceived = None
-
-    #pub_clear.publish(Empty())
-    #rospy.sleep(0.5)
 
     # robot for robot to stop moving
     while isMoving():
@@ -303,7 +299,6 @@ if __name__ == "__main__":
     posture_subscriber = rospy.Subscriber(POSTURE_TOPIC, String, onPostureRequest)
    
     #Add publishers
-    pub_clear = rospy.Publisher(CLEAR_SURFACE_TOPIC, Empty, queue_size=10)
     pub_state_activity = rospy.Publisher('state_activity', String, queue_size=10)
     publish_traj = rospy.Publisher(TRAJ_TOPIC, Path, queue_size=10)
     publish_dialog = rospy.Publisher(DIALOG_TOPIC, String, queue_size=10)

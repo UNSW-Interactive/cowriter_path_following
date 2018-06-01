@@ -36,10 +36,10 @@ class TargetPath(QtWidgets.QDialog):
 		self.playAgainstRobot = DEFAULT_PLAY_AGAINST_ROBOT
 		self.naoSpeedFactor = DEFAULT_NAO_SPEED_FACTOR
 		self.followPen = DEFAULT_TARGET_FOLLOWS_PEN
-		self.pathType = DEFAULT_PATH_TYPE
 		self.pressureTargetList = []
 		self.shapeIndex = 0
 		self.visualFormIndex = 0
+		self.penTraceWidth = DEFAULT_PEN_TRACE_WIDTH
 
 
 		super(TargetPath, self).__init__(parent)
@@ -69,16 +69,13 @@ class TargetPath(QtWidgets.QDialog):
 		self.choice_shape.addItem("Spiral")
 		self.choice_shape.addItem("Vertical Line")
 		self.choice_shape.addItem("Horizontal Line")
-		self.choice_shape.addItem("Letter")
+#		self.choice_shape.addItem("Letter")   # uncomment to use the letter database
 		self.choice_shape.addItem("Custom")
 
 		self.choice_visualForm.addItem("red_dot")
 		self.choice_visualForm.addItem("nao_head")
 		self.choice_visualForm.addItem("dot+head")
 		self.choice_visualForm.addItem("none")
-
-		self.choice_pathType.addItem("Double line")
-		self.choice_pathType.addItem("Single line")
 
 	# connect all sliders and text edits
 
@@ -109,6 +106,9 @@ class TargetPath(QtWidgets.QDialog):
 		self.e_pathWidth.textChanged.connect(self.pathWidthChanged)
 		self.sliderPathWidth.valueChanged.connect(self.pathWidthSliderChanged)
 
+		self.e_penTraceWidth.textChanged.connect(self.penTraceWidthChanged)
+		self.sliderPenTraceWidth.valueChanged.connect(self.penTraceWidthSliderChanged)
+
 		self.e_order.textChanged.connect(self.orderChanged)
 		self.sliderOrder.valueChanged.connect(self.orderSliderChanged)
 
@@ -121,10 +121,9 @@ class TargetPath(QtWidgets.QDialog):
 		self.show()
 
 	def updatePathParams(self):
-		try: self.centerX = float(self.e_centerX.toPlainText())
-		except: pass
-		try: self.centerY = float(self.e_centerY.toPlainText())
-		except: pass
+		self.centerX = self.parent.activity.frameGeometry().width() /2
+		self.centerY = self.parent.activity.frameGeometry().height() /2
+
 		try: self.width = float(self.e_width.toPlainText())
 		except: pass
 		try: self.height = float(self.e_height.toPlainText())
@@ -163,11 +162,11 @@ class TargetPath(QtWidgets.QDialog):
 		except: pass
 		try: self.followPen = self.c_targetFollowsPen.isChecked()
 		except: pass
-		try: self.pathType = str(self.choice_pathType.currentText())
-		except: pass
 		try: self.shapeIndex = self.choice_shape.currentIndex()
 		except: pass
 		try: self.visualFormIndex = self.choice_visualForm.currentIndex()
+		except: pass
+		try: self.penTraceWidth = float(self.e_penTraceWidth.toPlainText())
 		except: pass
 
 		self.updatePath()
@@ -208,9 +207,7 @@ class TargetPath(QtWidgets.QDialog):
 		
 
 	def createCustomPath(self):
-	#	self.updatePathParams()
 		self.signal_createCustomPath.emit()
-	#	self.close()
 
 	def resetDefaultParams(self):
 		self.centerX = self.parent.activity.frameGeometry().width() /2
@@ -234,12 +231,11 @@ class TargetPath(QtWidgets.QDialog):
 		self.c_targetFollowsPen.setChecked(DEFAULT_TARGET_FOLLOWS_PEN)
 		self.choice_shape.setCurrentIndex(0)
 		self.choice_visualForm.setCurrentIndex(0)
+		self.e_penTraceWidth.setText(str(DEFAULT_PEN_TRACE_WIDTH))
 
 	def autoFillOldParams(self, other=None):
 		if other == None:
 			other = self
-		self.e_centerX.setText(str(int(other.centerX)))
-		self.e_centerY.setText(str(int(other.centerY)))
 		self.e_width.setText(str(other.width))
 		self.e_height.setText(str(other.height))
 		self.e_order.setText(str(other.order))
@@ -259,6 +255,7 @@ class TargetPath(QtWidgets.QDialog):
 		self.c_targetFollowsPen.setChecked(other.followPen)
 		self.choice_shape.setCurrentIndex(other.shapeIndex)
 		self.choice_visualForm.setCurrentIndex(other.visualFormIndex)
+		self.e_penTraceWidth.setText(str(other.penTraceWidth))
 
 	def naoExplainGame(self):
 		if self.c_targetFollowsPen.isChecked():
@@ -311,7 +308,8 @@ class TargetPath(QtWidgets.QDialog):
 				self.followPen = variables[18]
 				self.shapeIndex = variables[19]
 				self.visualFormIndex = variables[20]
-				self.path = variables[21]
+				self.penTraceWidth = variables[21]
+				self.path = variables[22]
 				self.autoFillOldParams()
 		except:
 			print('Could not load file')
@@ -344,6 +342,7 @@ class TargetPath(QtWidgets.QDialog):
 				variables.append(self.followPen)
 				variables.append(self.shapeIndex)
 				variables.append(self.visualFormIndex)
+				variables.append(self.penTraceWidth)
 				variables.append(self.path)
 				pickle.dump(variables, fp)
 		except:
@@ -458,6 +457,19 @@ class TargetPath(QtWidgets.QDialog):
 			self.pathWidth = float(self.sliderPathWidth.value()/(100/MAX_PATH_WIDTH))
 			self.e_pathWidth.setText(str(self.pathWidth))
 		except: pass
+
+	def penTraceWidthChanged(self):
+		try:
+			self.penTraceWidth = float(self.e_penTraceWidth.toPlainText())
+			self.sliderPenTraceWidth.setValue(self.penTraceWidth*(100/MAX_PEN_TRACE_WIDTH))
+		except: pass
+
+	def penTraceWidthSliderChanged(self):
+		try:
+			self.penTraceWidth = float(self.sliderPenTraceWidth.value()/(100/MAX_PEN_TRACE_WIDTH))
+			self.e_penTraceWidth.setText(str(self.penTraceWidth))
+		except: pass
+
 
 	def orderChanged(self):
 		try:

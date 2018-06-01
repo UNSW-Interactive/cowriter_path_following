@@ -8,30 +8,25 @@ from nav_msgs.msg import Path
 from std_msgs.msg import Float32, String, Empty
 from geometry_msgs.msg import PoseStamped
 from cowriter_path_following.srv import getNaoState
+from copy import deepcopy
 
 from TactileSurfaceArea import TactileSurfaceArea
 from manager_view import Manager
-from TargetParams import TargetParams
 from TargetPath import TargetPath
-from LinePath import LinePath
 from PathGenerator import PathGenerator
 from CustomPathSurface import CustomPathSurface
 from config_params import *
-from helpers import *
 
 
 class TargetActivity(QtWidgets.QDialog):
 
 	def __init__(self, useRobot):
 		self.tactileSurface = None
-		self.targetParams = None
 		self.targetPath = None
-		self.linePath = None
 		self.customPathSurface = None
 		self.useRobot = useRobot
 
 		super(TargetActivity, self).__init__()
-	#	uic.loadUi('design/activity_target.ui', self)
 		
 		self.resize(1400,800)
 		self.show()
@@ -48,30 +43,11 @@ class TargetActivity(QtWidgets.QDialog):
 		self.publish_state_request = rospy.Publisher(STATE_REQUEST_TOPIC, String, queue_size=10)
 		self.publish_score = rospy.Publisher(SCORE_TOPIC, Float32, queue_size=10)
 
-		# add slots
-	#	self.buttonErase.clicked.connect(self.buttonEraseClicked)
-				
 
 	def resizeEvent(self, event):
 		if self.tactileSurface != None:
 			self.tactileSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
-#		self.buttonErase.move(self.width() - self.buttonErase.width() - 10, self.buttonErase.y())
-	'''
-	def buttonEraseClicked(self):
 
-		self.tactileSurface.erasePixmap()
-#		self.updateScoreBar(0)
-		self.tactileSurface.trarget = None
-	'''
-	def callback_targetParamsCompleted(self):
-		if self.targetParams == None:
-			return
-		self.tactileSurface.erasePixmap()
-		self.tactileSurface.addTarget()  
-		self.tactileSurface.target.updateWithParams(targetParams = self.targetParams)
-		self.targetParams.close()
-		if self.useRobot == 'robot':
-			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 	def callback_targetPathCompleted(self):
 		if self.targetPath == None:
@@ -93,78 +69,26 @@ class TargetActivity(QtWidgets.QDialog):
 		if self.targetPath.previewTraj:
 			self.tactileSurface.drawPathLine(self.targetPath.path, self.targetPath.pathWidth)
 		self.tactileSurface.activeNaoHead = self.targetPath.playAgainstRobot
+		self.tactileSurface.penTraceWidth = self.targetPath.penTraceWidth
 		if not self.targetPath.traceWithRobot and self.useRobot == 'robot':
 			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
 
 
-	def callback_linePathCompleted(self):
-		if self.linePath == None:
-			return
-
-		#	rospy.wait_for_service('get_nao_state')
-		if self.linePath.traceWithRobot:			
-			available = self.checkAndWaitForRobotAvailable(['WAITING_FOR_PATH'], 'WAITING_FOR_PATH')
-			if not available:
-				return 
-
-		self.linePath.close()
-		self.tactileSurface.erasePixmap()
-		upperPath, lowerPath = PathGenerator.generatePathBorders(self.linePath.path, self.linePath.pathWidth)
-		if len(upperPath) < 1:
-			return
-		self.tactileSurface.addTarget()
-		self.tactileSurface.target.updateWithParams(linePath = self.linePath)
-#		self.updateScoreBar(0)
-		self.tactileSurface.drawPathBorders(upperPath, lowerPath)
-		self.tactileSurface.markPenTrajectory = True
-		self.tactileSurface.activeNaoHead = self.linePath.playAgainstRobot
-		if not self.linePath.traceWithRobot and self.useRobot == 'robot':
-			self.checkRobotAvailable(['ASKING_PLAY_GAME', 'WAITING_FOR_GAME_TO_FINISH'], 'ASKING_PLAY_GAME')
-
-
 	def callback_createCustomPath(self):
-		self.customPathSurface = CustomPathSurface(self)
-		self.customPathSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
-#		self.customPathSurface.speedFactor = self.targetPath.speedFactor
-		self.customPathSurface.show()
-	'''
-	def updateScoreBar(self, score, maxScore = 100):
-		scorePercent = score * 100 / maxScore
-		if scorePercent >= 100:
-			self.publishScore(scorePercent)
-		scorePercent = min(scorePercent, 100) 
-		self.progressBarScore.setValue(scorePercent)
-
-	def updateScoreBarPen(self, scoreList, scorePenalty = 0, maxScore = 600):
-		scorePercent = (float) (sum(scoreList))/len(scoreList) * maxScore - scorePenalty/10
-		if scorePercent >= 100:
-			self.publishScore(scorePercent)
-		scorePercent = min(scorePercent, 100) 
-		self.progressBarScore.setValue(scorePercent)
-
-	def updateScoreBarPath(self, scorePercent):
-		scorePercent = max(min(scorePercent*102.0, 100),0)
-		if scorePercent >= 100:
-			self.publishScore(scorePercent)
-		self.progressBarScore.setValue(scorePercent)
-
-	def publishScore(self, score = None):
-		if score is not None:
-			self.publish_score.publish(score)
+		if self.customPathSurface == None:
+			self.customPathSurface = CustomPathSurface(self)
 		else:
-			self.publish_score.publish(0)
-	'''
+			self.customPathSurface.erasePixmap()
+		self.customPathSurface.setGeometry(QRect(0, 0, self.frameGeometry().width(), self.frameGeometry().height()))
+		self.customPathSurface.show()
+
+
 	def customPathReady(self, path):
-		if not self.linePath == None:
-			path = PathGenerator.adjustPath(path)
-			self.linePath.path = PathGenerator.generateSmoothPath(path, self.linePath.time / FRAME_TIME)
-			self.callback_linePathCompleted()
-		elif not self.targetPath == None:
+		if not self.targetPath == None:
 			self.targetPath.path = path
-			self.targetPath.width = 3000
-			self.targetPath.height = 2000
+			self.targetPath.width = MAX_WIDTH
+			self.targetPath.height = MAX_HEIGHT
 			self.targetPath.choice_shape.setCurrentIndex(self.targetPath.choice_shape.findText('Custom'))
-	#		self.callback_targetPathCompleted()
 		else: return
 		
 
@@ -177,12 +101,23 @@ class TargetActivity(QtWidgets.QDialog):
 			else:
 				path = self.tactileSurface.target.path
 		
-		traj = make_traj_msg(path)
+		traj = self.make_traj_msg(path)
 		self.publish_path_shape.publish(traj)
 		self.tactileSurface.pathIndex = 0
 		self.tactileSurface.drawLineTimer.start(FRAME_TIME)
-	#	rospy.sleep(traj.header.stamp - rospy.Time.now())
 		
+
+	def make_traj_msg(self, path):
+
+		traj = Path()
+		for x, y in path[1:-1]:
+			point = PoseStamped()
+
+			point.pose.position.x = x * PIX_TO_MM / 1000
+			point.pose.position.y = y * PIX_TO_MM / 1000
+			traj.poses.append(deepcopy(point))
+
+		return traj
 
 	def on_robotReady(self, robot_delay):
 		rospy.sleep(robot_delay.data + TABLET_TO_ROBOT_DELAY)
@@ -222,7 +157,6 @@ if __name__ == '__main__':
 
 	useRobot = ''
 	if len(sys.argv)>1:
-		print(sys.argv[1])
 		useRobot = sys.argv[1]
 
 	app = QtWidgets.QApplication(sys.argv)

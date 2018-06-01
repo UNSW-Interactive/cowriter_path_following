@@ -23,7 +23,6 @@ class CustomPathSurface(QTableWidget):
 		self.pixmap = None
 		self.pixmapHandwriting = None
 		self.deviceDown = False
-	#	self.timer = QTimer()
 
 		self.path = []
 		self.lastPoints = [QPoint(), QPoint()]
@@ -65,7 +64,6 @@ class CustomPathSurface(QTableWidget):
 		return path
 
 	def cancelPath(self):
-#		self.erasePixmap()
 		self.close()
 
 	def initPixmaps(self):
@@ -110,23 +108,18 @@ class CustomPathSurface(QTableWidget):
 				x = event.posF().x()
 				y =  event.posF().y()
 				if len(self.path) > 0:
-					if abs(self.path[-1][0] - x) + abs(self.path[-1][1] - y) > 100:
+					if abs(self.path[-1][0] - x) + abs(self.path[-1][1] - y) > 300:
 						return
 				self.path.append([x,y])
 		
 	def updateBrush(self, event):
-		#hue, saturation, value, alpha;
-		#myColor.getHsv(&hue, &saturation, &value, &alpha)
 		myColor = QColor()
 
 		vValue = int(((event.yTilt() + 60.0) / 120.0) * 255)
 		hValue = int(((event.xTilt() + 60.0) / 120.0) * 255)
 		alpha = int(event.pressure() * 255.0)
 
-		# print vValue, hValue,alpha
-
 		myColor.setHsv(0, vValue, hValue, alpha)
-		#myColor.setAlpha(alpha)
 		
 		self.myPen.setWidthF(event.pressure() * 2 + 1)
 		self.myBrush.setColor(myColor)

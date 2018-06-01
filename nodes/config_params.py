@@ -19,19 +19,13 @@ DEFAULT_HEIGHT = 100.0
 DEFAULT_PATH_SHAPE_WIDTH = 1200.0
 DEFAULT_PATH_SHAPE_HEIGHT = 200.0
 DEFAULT_PATH_WIDTH = 60.0
-DEFAULT_VX = 0.0
-DEFAULT_VY = 0.0
+DEFAULT_PEN_TRACE_WIDTH = 3.0
 DEFAULT_PRESSURE_TARGET = 0.3
 DEFAULT_PRESSURE_DIFFICULTY = 1.0
 DEFAULT_DISTANCE_DIFFICULTY = 0.5
-DEFAULT_TILT_VELX = 70.0
-DEFAULT_TILT_VELY = 70.0
-DEFAULT_STEER_TILTX = False
-DEFAULT_STEER_TILTY = False
 DEFAULT_SPEED_FACTOR = 2.0
 DEFAULT_TIME = 10.0
 DEFAULT_ORDER = 10.0
-DEFAULT_SIN_PHASE = 0.0
 DEFAULT_TRACE_WITH_ROBOT = False
 DEFAULT_PLAY_AGAINST_ROBOT = False
 DEFAULT_NAO_SPEED_FACTOR = 5.0
@@ -39,7 +33,6 @@ DEFAULT_MARK_PEN_TRAJ = True
 DEFAULT_PLAY_WITH_ROBOT = True
 DEFAULT_PREVIEW_TRAJ = True
 DEFAULT_TARGET_FOLLOWS_PEN = True
-DEFAULT_PATH_TYPE = 'Double line'
 
 # slider maximums
 MAX_TARGET_WIDTH = 400.0
@@ -49,6 +42,7 @@ MAX_HEIGHT = 2000.0
 MAX_ORDER = 60.0
 MAX_TIME = 200.0
 MAX_PATH_WIDTH = 400.0
+MAX_PEN_TRACE_WIDTH = 50.0
 MAX_NAO_SPEED_FACTOR = 40.0
 MAX_PRESSURE_DIFFICULTY = 4.0
 MAX_DISTANCE_DIFFICULTY = 4.0
@@ -58,7 +52,6 @@ MAX_TARGET_PRESSURE = 1.0
 TRAJ_TOPIC = "path_traj"
 READY_TOPIC = "robot_ready"
 PATH_TOPIC = "path_received"
-CLEAR_SURFACE_TOPIC = "clear_screen"
 PATH_FINISHED_TOPIC = "path_finished"
 SCORE_TOPIC = "child_score"
 STATE_REQUEST_TOPIC = "state_request"
@@ -83,7 +76,7 @@ try:
 
     naoWriting = rospy.get_param('/nao_writing',True) #whether or not the robot should move its arms
     naoStanding = rospy.get_param('/nao_standing', True) #whether or not the robot should stand or rest on its knies 
-    LANGUAGE = rospy.get_param('/language','french')
+    LANGUAGE = rospy.get_param('/language','english')
     PATH_DB = rospy.get_param('/path_db', "/home/student/DB")
     PATH_LETTERS_DB = rospy.get_param('/path_letters_db', "letters")
     SAVED_PATHS = rospy.get_param('/paths_saved', "saved_paths")
@@ -96,7 +89,7 @@ try:
     DIALOG_CHILD_PLAYING = "child_playing"
 
 except:  # if robot is not in use
-    LANGUAGE = 'french'
+    LANGUAGE = 'english'
     PATH_DB = "/home/nicolasm/DB"
     PATH_LETTERS_DB = "letters"
     SAVED_PATHS = "saved_paths"

@@ -7,9 +7,7 @@ from nav_msgs.msg import Path
 from std_msgs.msg import String, Int16, Float64MultiArray, Float32, Empty
 from geometry_msgs.msg import PoseStamped
 import numpy as np
-from TargetParams import TargetParams
 from TargetPath import TargetPath
-from LinePath import LinePath
 from config_params import *
 from ChildProfile import ChildProfile
 from datetime import datetime
@@ -39,15 +37,10 @@ class Manager(QtWidgets.QDialog):
 		# connect all buttons
 		self.buttonErase.clicked.connect(self.buttonEraseClicked)
 		self.buttonRestart.clicked.connect(self.buttonRestartClicked)
-		self.buttonTargetParams.clicked.connect(self.buttonTargetParamsClicked)
 		self.buttonTargetPath.clicked.connect(self.buttonTargetPathClicked)
-		self.buttonLinePath.clicked.connect(self.buttonLinePathClicked)
 		self.buttonProfile.clicked.connect(self.buttonProfileClicked)
 		self.buttonPathDialog.clicked.connect(self.buttonPathDialogClicked)
 		self.buttonSave.clicked.connect(self.buttonSaveClicked)
-
-		self.buttonTargetParams.hide()
-		self.buttonLinePath.hide()
 
 		if self.activity.useRobot == 'robot':
 			self.buttonRobotOptions.clicked.connect(self.buttonRobotOptionsClicked)
@@ -152,41 +145,25 @@ class Manager(QtWidgets.QDialog):
 		if self.buttonSave.isEnabled():
 			self.buttonSaveClicked()
 		self.activity.tactileSurface.erasePixmap()
-#		self.activity.updateScoreBar(0)
 		self.activity.tactileSurface.target = None
 
 	def buttonUnexpectedFailClicked(self):
 		self.publish_fail.publish()
 
 	def buttonRestartClicked(self):
-#		self.activity.updateScoreBar(0)
 		if self.buttonSave.isEnabled():
 			self.buttonSaveClicked()
 		self.activity.tactileSurface.erasePixmap()
 		if not self.activity.tactileSurface.target == None:
-			behavior = self.activity.tactileSurface.target.behavior
-			if behavior == 'follow_path' or behavior == 'follow_pen_target':
-				self.activity.tactileSurface.target.frame = 0
-				if self.activity.targetPath.previewTraj:
-					self.activity.tactileSurface.drawPathLine(self.activity.tactileSurface.path, self.activity.targetPath.pathWidth, repeat = True)
-				if not self.activity.targetPath == None:
-					self.activity.tactileSurface.activeNaoHead = self.activity.targetPath.playAgainstRobot
-				else:
-					self.activity.callback_targetPathCompleted()
-			elif behavior == 'follow_pen':
-				self.activity.tactileSurface.drawPathBorders(self.activity.tactileSurface.upperPath, self.activity.tactileSurface.lowerPath, repeat = True)
-				if not self.activity.linePath == None:
-					self.activity.tactileSurface.activeNaoHead = self.activity.linePath.playAgainstRobot
+			self.activity.tactileSurface.target.frame = 0
+			if self.activity.targetPath.previewTraj:
+				self.activity.tactileSurface.drawPathLine(self.activity.tactileSurface.path, self.activity.targetPath.pathWidth, repeat = True)
+			if not self.activity.targetPath == None:
+				self.activity.tactileSurface.activeNaoHead = self.activity.targetPath.playAgainstRobot
 			else:
-				self.activity.callback_targetParamsCompleted()
+				self.activity.callback_targetPathCompleted()
 
-	def buttonTargetParamsClicked(self):
-		if self.activity.targetParams == None:
-			self.activity.targetParams = TargetParams(self)
-			self.activity.targetParams.signal_targetParamsCompleted.connect(self.activity.callback_targetParamsCompleted)
-		else: self.activity.targetParams.show()
-		self.activity.targetParams.autoFillOldParams()
-	
+
 	def buttonTargetPathClicked(self):
 		if self.activity.targetPath == None:
 			self.activity.targetPath = TargetPath(self)
@@ -194,14 +171,6 @@ class Manager(QtWidgets.QDialog):
 			self.activity.targetPath.signal_createCustomPath.connect(self.activity.callback_createCustomPath)
 		else: self.activity.targetPath.show()
 		self.activity.targetPath.autoFillOldParams()
-
-	def buttonLinePathClicked(self):
-		if self.activity.linePath == None:
-			self.activity.linePath = LinePath(self)
-			self.activity.linePath.signal_linePathCompleted.connect(self.activity.callback_linePathCompleted)
-			self.activity.linePath.signal_createCustomPath.connect(self.activity.callback_createCustomPath)
-		else: self.activity.linePath.show()
-		self.activity.linePath.autoFillOldParams()
 
 	def buttonNaoSitClicked(self):
 		self.publish_posture.publish('sit')
@@ -211,10 +180,6 @@ class Manager(QtWidgets.QDialog):
 
 	def addDialogOptions(self, message):
 		dialogTopic = message.data
-#		if len(dialogTopic) > 0:
-#			self.widgetNaoDialog.show()
-#		else:
-#			self.widgetNaoDialog.hide()
 		if dialogTopic == DIALOG_CHILD_PLAYING:
 			self.widgetNaoDialog.show()
 			self.buttonOptionA.setText(CHILD_PLAYING_OPTION_A)
@@ -224,22 +189,18 @@ class Manager(QtWidgets.QDialog):
 
 
 	def buttonOptionAClicked(self):
-#		self.widgetNaoDialog.hide()
 		toSay = str(self.buttonOptionA.text())
 		self.publish_dialogOption.publish(toSay)
 
 	def buttonOptionBClicked(self):
-#		self.widgetNaoDialog.hide()
 		toSay = str(self.buttonOptionB.text())
 		self.publish_dialogOption.publish(toSay)
 
 	def buttonOptionCClicked(self):
-#		self.widgetNaoDialog.hide()
 		toSay = str(self.buttonOptionC.text())
 		self.publish_dialogOption.publish(toSay)
 
 	def buttonOptionDClicked(self):
-#		self.widgetNaoDialog.hide()
 		toSay = str(self.buttonOptionD.text())
 		self.publish_dialogOption.publish(toSay)
 
