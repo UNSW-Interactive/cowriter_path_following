@@ -238,7 +238,7 @@ class TactileSurfaceArea(QTableWidget):
 
 			if self.parent.targetPath.playAgainstRobot and not repeat:
 				self.naoSpeedFactor = self.parent.targetPath.naoSpeedFactor
-			if self.parent.targetPath.traceWithRobot:
+			if self.parent.targetPath.traceWithRobot and not repeat:
 				self.parent.drawPathWithRobot(path)
 			else:
 				for i in range(len(self.path)-1):
