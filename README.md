@@ -5,6 +5,12 @@ This package contains a set of nodes that are used to manage the tablet interfac
 
 Tested with ROS Kinetic on Ubuntu 16.04 (LTS)
 
+Dependencies
+----------
+- scipy and numpy
+- pandas
+
+
 Install & Compile:
 ---------------
 ```
